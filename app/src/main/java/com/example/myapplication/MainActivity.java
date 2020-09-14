@@ -15,9 +15,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_users);
 
-        mButtonSubmit = findViewById(R.id.button);
+        mButtonSubmit = findViewById(R.id.SubmitButtonMain);
 
         mButtonSubmit.setOnClickListener(this);
     }
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch(view.getId()) {
 
-            case R.id.button: {
+            case R.id.SubmitButtonMain: {
                 Intent myIntent = new Intent(MainActivity.this, UsersActivity.class);
                 MainActivity.this.startActivity(myIntent);
             }
