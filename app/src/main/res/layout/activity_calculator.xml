@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -61,9 +60,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:maxLength="2"
                 android:hint="foot"
-                android:inputType="number" />
+                android:inputType="number"
+                android:maxLength="2" />
 
             <EditText
                 android:id="@+id/editTextHeightInch"
@@ -71,9 +70,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:ems="10"
-                android:maxLength="2"
                 android:hint="inch"
-                android:inputType="number" />
+                android:inputType="number"
+                android:maxLength="2" />
 
             <EditText
                 android:id="@+id/EditTextWeight"
@@ -81,9 +80,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:ems="10"
-                android:maxLength="7"
                 android:hint="lbs"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:maxLength="7" />
 
         </LinearLayout>
 
@@ -124,14 +123,23 @@
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold" />
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="120dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_gravity="start">
+
+                <RadioButton
+                    android:id="@+id/gainWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Gain Weight:  " />
 
                 <RadioButton
                     android:id="@+id/loseWeight"
@@ -141,46 +149,42 @@
                     android:text="Lose Weight: "
                     android:textColor="@android:color/background_dark" />
 
-                <EditText
-                    android:id="@+id/editTextNumber"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:gravity="bottom"
-                    android:hint="lbs/week"
-                    android:inputType="number" />
+                <RadioButton
+                    android:id="@+id/maintainWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Maintain Weight" />
 
-            </LinearLayout>
+            </RadioGroup>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <RadioButton
-                    android:id="@+id/gainWeight"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:text="Gain Weight:  " />
+                <EditText
+                    android:id="@+id/editTextNumber"
+                    android:layout_width="100dp"
+                    android:layout_height="32dp"
+                    android:ems="10"
+                    android:gravity="bottom"
+                    android:hint="lbs/week"
+                    android:inputType="number"
+                    android:textSize="11sp" />
 
                 <EditText
                     android:id="@+id/editTextNumber2"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="lbs/week"
-                    android:inputType="number" />
+                    android:inputType="number"
+                    android:textSize="11sp" />
             </LinearLayout>
 
-            <RadioButton
-                android:id="@+id/maintainWeight"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginLeft="10dp"
-                android:text="Maintain Weight" />
-        </RadioGroup>
+        </LinearLayout>
 
         <Button
             android:id="@+id/GetMyPlanButton"
@@ -198,12 +202,27 @@
             android:layout_height="100dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/BMROutput"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="Your BMR:" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/BMROutput"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="150dp"
+                    android:gravity="center"
+                    android:text="BMR:" />
+
+                <TextView
+                    android:id="@+id/BMROutput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="BMI:" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/CaloriesOutput"
