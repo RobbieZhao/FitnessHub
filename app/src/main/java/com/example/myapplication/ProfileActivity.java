@@ -266,8 +266,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         ProfileData.put("username", username);
     }
 
-    private void collectAge() throws Exception {
-        collectInteger(mEtAge, "age");
+    private void collectAge() {
+        int age = Helper.getIntegerInput(mEtAge);
+
+        if (age > 0)
+            ProfileData.put("age", Integer.toString(age));
     }
 
     private void collectSex() {
@@ -283,69 +286,47 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void collectLocation() {
-        collectString(mEtCountry, "country");
-        collectString(mEtCity, "city");
+        String country = mEtCountry.getText().toString().trim();
+        if (!country.isEmpty())
+            ProfileData.put("country", country);
+
+        String city = mEtCity.getText().toString().trim();
+        if (!city.isEmpty())
+            ProfileData.put("city", city);
     }
 
     private void collectHeight() throws Exception {
-        collectInteger(mEtFoot, "foot");
-        collectInteger(mEtInch, "inch");
+        int foot = Helper.getIntegerInput(mEtFoot);
+        int inch = Helper.getIntegerInput(mEtInch);
+
+        if (inch >= 13) {
+            Toast.makeText(this,"Inch must be 0-11!",Toast.LENGTH_SHORT).show();
+            throw new Exception("Invalid inches");
+        } else if (foot == 0 && inch == 0) {
+            Toast.makeText(this,"Height can't be 0!",Toast.LENGTH_SHORT).show();
+            throw new Exception("Invalid height");
+        } else if (foot == -1 && inch >= 0) {
+            Toast.makeText(this,"Please enter foot!",Toast.LENGTH_SHORT).show();
+            throw new Exception("Empty foot");
+        } else if (foot >= 0 && inch == -1) {
+            Toast.makeText(this,"Please enter inch!",Toast.LENGTH_SHORT).show();
+            throw new Exception("Empty inch");
+        }
+
+        ProfileData.put("foot", Integer.toString(foot));
+        ProfileData.put("inch", Integer.toString(inch));
     }
 
     private void collectWeight() throws Exception {
-        collectFloat(mEtWeight, "weight");
-    }
+        float weight = Helper.getFloatInput(mEtWeight);
 
-    private void collectInteger(EditText editText, String name) throws Exception {
-        String str = editText.getText().toString().trim();
-
-        if (!str.isEmpty()) {
-            String errorMessage = "Invalid " + name + "!";
-
-            int age;
-            try {
-                age = Integer.parseInt(str);
-
-                if (age < 0) {
-                    throw new Exception(errorMessage);
-                }
-            } catch (Exception e) {
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
-                throw new Exception(errorMessage);
-            }
-
-            ProfileData.put(name, Integer.toString(age));
+        if (weight == 0) {
+            Toast.makeText(this,"Weight can't be 0!",Toast.LENGTH_SHORT).show();
+            throw new Exception("Invalid weight");
         }
-    }
 
-    private void collectFloat(EditText editText, String name) throws Exception {
-        String str = editText.getText().toString().trim();
-
-        if (!str.isEmpty()) {
-            String errorMessage = "Invalid " + name + "!";
-
-            float age;
-            try {
-                age = Float.parseFloat(str);
-
-                if (age < 0) {
-                    throw new Exception(errorMessage);
-                }
-            } catch (Exception e) {
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
-                throw new Exception(errorMessage);
-            }
-
-            ProfileData.put(name, Float.toString(age));
-        }
-    }
-
-    private void collectString(EditText editText, String name) {
-        String str = editText.getText().toString().trim();
-
-        if (!str.isEmpty()) {
-            ProfileData.put(name, str);
-        }
+        if (weight > 0)
+            ProfileData.put("weight", Float.toString(weight));
     }
 }
 

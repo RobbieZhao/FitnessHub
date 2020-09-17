@@ -50,5 +50,26 @@ public class Helper {
         }
     }
 
+    public static int getTotalInches(int foot, int inch) {
+        return foot * 12 + inch;
+    }
 
+    public static int getIntegerInput(EditText editText) {
+        String str = editText.getText().toString();
+
+        if (str.isEmpty())
+            return -1;
+
+        return Integer.parseInt(str);
+    }
+
+    public static float getFloatInput(EditText editText) {
+        String str = editText.getText().toString();
+
+        if (str.isEmpty()) {
+            return -1;
+        }
+
+        return Float.parseFloat(str);
+    }
 }
