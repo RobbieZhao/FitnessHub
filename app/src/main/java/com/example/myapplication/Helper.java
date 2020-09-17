@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Helper {
+
+    public static final String data_file = "userdata.txt";
+
+    public static final String image_file = "profile.jpg";
+
     public static void setRadioGroupStatus(RadioGroup radioGroup, boolean isSelectable) {
         int numberOfChildren = radioGroup.getChildCount();
         for (int i = 0; i < numberOfChildren; i++) {
@@ -66,6 +71,35 @@ public class Helper {
             return true;
         }
         return false;
+    }
+
+    // returns a array of length 2
+    // the first string is the toast message
+    // the second string is the exception message
+    public static String[] checkHeightInput(int foot, int inch, boolean isRequired) {
+        String[] messages = new String[] {"", ""};
+
+        if (isRequired) {
+            if (foot == -1) {
+                messages[0] = "Please enter foot!";
+                messages[1] = "Empty foot";
+            } else if (inch == -1){
+                messages[0] = "Please enter inch!";
+                messages[1] = "Empty inch";
+            }
+            return messages;
+        }
+
+        if (inch >= 13) {
+            messages[0] = "Inch must be 0-11!";
+            messages[1] = "Invalid inches";
+        } else if (foot == 0 && inch == 0) {
+            messages[0] = "Height can't be 0!";
+            messages[1] = "Invalid height";
+        }
+
+        messages[0] = "";
+        return messages;
     }
 
     public static boolean saveImage(Bitmap finalBitmap, String directory, String filename) {
@@ -134,24 +168,31 @@ public class Helper {
         return Integer.parseInt(str);
     }
 
-    public static float getFloatInput(EditText editText) {
+    public static double getDoubleInput(EditText editText) {
         String str = editText.getText().toString();
 
         if (str.isEmpty()) {
             return -1;
         }
 
-        return Float.parseFloat(str);
+        return Double.parseDouble(str);
     }
 
-    public static float calculateBMI(float weight, int inch) {
+    public static double calculateBMI(double weight, int inch) {
         return 703 * weight / inch / inch;
     }
 
-    public static double calculateBMR(float weight, int inch, int age, boolean isMale) {
+    public static double calculateBMR(double weight, int inch, int age, boolean isMale) {
         if (isMale)
             return 66 + 6.2 * weight + 12.7 * inch - 6.76 * age;
         else
             return 655 + 4.35 * weight + 4.7 * inch - 4.7 * age;
+    }
+
+    public static double calculateCaloriesIntake(double BMR, boolean isActive, double pounds) {
+        if (isActive)
+            return BMR * 1.55 + pounds * 500;
+        else
+            return BMR * 1.2 + pounds * 500;
     }
 }

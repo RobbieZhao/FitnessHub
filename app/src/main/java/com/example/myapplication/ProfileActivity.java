@@ -38,13 +38,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private RadioGroup mRgSex;
     private Button mButtonSubmit;
 
-    private HashMap<String, String> ProfileData = new HashMap<>();
+    private HashMap<String, String> ProfileData;
     // userMode is either NEW_USER, VIEW, EDIT
     private String userMode;
 
     private String directory;
-    private String data_file = "userdata.txt";
-    private String image_file = "profile.jpg";
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -73,10 +71,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         String parentActivity = getIntent().getStringExtra("ParentActivity");
         if (parentActivity.equals("LoginActivity")) {
             userMode = "NEW_USER";
+            ProfileData = new HashMap<>();
         } else {
             userMode = "VIEW";
             mButtonSubmit.setText("Edit");
-            ProfileData = Helper.readData(directory, data_file);
+            ProfileData = Helper.readData(directory, Helper.data_file);
             displayData();
             disableInputs();
         }
@@ -123,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
             //Open a file and write to it
             if(Helper.isExternalStorageWritable()){
-                if (Helper.saveImage(photo, directory, image_file)) {
+                if (Helper.saveImage(photo, directory, Helper.image_file)) {
                     Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
                 }
             } else {
@@ -140,7 +139,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 Intent myIntent = new Intent(ProfileActivity.this, HomeActivity.class);
                 ProfileActivity.this.startActivity(myIntent);
             } catch (Exception e) {
-                System.out.println(e.getStackTrace());
+                e.printStackTrace();
             }
         } else if (userMode.equals("VIEW")){
             userMode = "EDIT";
@@ -157,7 +156,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         collectHeight();
         collectWeight();
 
-        if (!Helper.storeData(ProfileData, directory, data_file))
+        if (!Helper.storeData(ProfileData, directory, Helper.data_file))
             throw new Exception("File not saved");
     }
 
@@ -171,7 +170,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private void displayData() {
         //Set the ImageView
-        Bitmap thumbnailImage = BitmapFactory.decodeFile(directory + "/" + image_file);
+        Bitmap thumbnailImage = BitmapFactory.decodeFile(directory + "/" + Helper.image_file);
         if(thumbnailImage!=null){
             mIvProfile.setImageBitmap(thumbnailImage);
         }
@@ -189,7 +188,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         String sex = getValueFromMap(ProfileData, "sex");
         if (sex.equals("male")) {
             mRgSex.check(R.id.Male);
-        } else {
+        } else if (sex.equals("female")) {
             mRgSex.check(R.id.Female);
         }
     }
@@ -252,26 +251,20 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         int foot = Helper.getIntegerInput(mEtFoot);
         int inch = Helper.getIntegerInput(mEtInch);
 
-        if (inch >= 13) {
-            Toast.makeText(this,"Inch must be 0-11!",Toast.LENGTH_SHORT).show();
-            throw new Exception("Invalid inches");
-        } else if (foot == 0 && inch == 0) {
-            Toast.makeText(this,"Height can't be 0!",Toast.LENGTH_SHORT).show();
-            throw new Exception("Invalid height");
-        } else if (foot == -1 && inch >= 0) {
-            Toast.makeText(this,"Please enter foot!",Toast.LENGTH_SHORT).show();
-            throw new Exception("Empty foot");
-        } else if (foot >= 0 && inch == -1) {
-            Toast.makeText(this,"Please enter inch!",Toast.LENGTH_SHORT).show();
-            throw new Exception("Empty inch");
+        String[] messages = Helper.checkHeightInput(foot, inch, false);
+        if (!messages[0].isEmpty() && !messages[1].isEmpty()) {
+            Toast.makeText(this, messages[0], Toast.LENGTH_SHORT).show();
+            throw new Exception(messages[1]);
         }
 
-        ProfileData.put("foot", Integer.toString(foot));
-        ProfileData.put("inch", Integer.toString(inch));
+        if (foot != -1 && inch != -1) {
+            ProfileData.put("foot", Integer.toString(foot));
+            ProfileData.put("inch", Integer.toString(inch));
+        }
     }
 
     private void collectWeight() throws Exception {
-        float weight = Helper.getFloatInput(mEtWeight);
+        double weight = Helper.getDoubleInput(mEtWeight);
 
         if (weight == 0) {
             Toast.makeText(this,"Weight can't be 0!",Toast.LENGTH_SHORT).show();
@@ -279,7 +272,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         if (weight > 0)
-            ProfileData.put("weight", Float.toString(weight));
+            ProfileData.put("weight", Double.toString(weight));
     }
 }
 

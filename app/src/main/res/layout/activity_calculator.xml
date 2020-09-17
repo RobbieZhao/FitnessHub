@@ -61,6 +61,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:ems="10"
+                android:maxLength="2"
                 android:hint="foot"
                 android:inputType="number" />
 
@@ -70,6 +71,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:ems="10"
+                android:maxLength="2"
                 android:hint="inch"
                 android:inputType="number" />
 
@@ -79,8 +81,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:ems="10"
+                android:maxLength="7"
                 android:hint="lbs"
-                android:inputType="number" />
+                android:inputType="numberDecimal" />
 
         </LinearLayout>
 
