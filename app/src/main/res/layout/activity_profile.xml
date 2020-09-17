@@ -101,6 +101,7 @@
                 android:textStyle="bold" />
 
             <RadioGroup
+                android:id="@+id/RgSex"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -206,6 +207,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="43dp"
                 android:ems="10"
+                android:hint="lbs"
                 android:inputType="number" />
         </LinearLayout>
 
