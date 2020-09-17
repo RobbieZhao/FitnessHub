@@ -76,7 +76,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             userMode = "VIEW";
             mButtonSubmit.setText("Edit");
-            readData();
+            ProfileData = Helper.readData(directory, data_file);
             displayData();
             disableInputs();
         }
@@ -122,35 +122,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             mIvProfile.setImageBitmap(photo);
 
             //Open a file and write to it
-            if(isExternalStorageWritable()){
-                saveImage(photo);
-            } else{
+            if(Helper.isExternalStorageWritable()){
+                if (Helper.saveImage(photo, directory, image_file)) {
+                    Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
                 Toast.makeText(this,"External storage not writable.",Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-    private boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-    private void saveImage(Bitmap finalBitmap) {
-        File file = new File(directory, image_file);
-
-        if (file.exists()) file.delete ();
-
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-            Toast.makeText(this,"file saved!",Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -179,19 +157,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         collectHeight();
         collectWeight();
 
-        storeData();
-    }
-
-    private void storeData() throws IOException {
-        File file = new File(directory, data_file);
-
-        if (file.exists()) file.delete ();
-
-        FileOutputStream fileOut = new FileOutputStream(file);
-        ObjectOutputStream out = new ObjectOutputStream(fileOut);
-        out.writeObject(ProfileData);
-        out.close();
-        fileOut.close();
+        if (!Helper.storeData(ProfileData, directory, data_file))
+            throw new Exception("File not saved");
     }
 
     private void enableInputs() {
@@ -200,20 +167,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         Helper.enableEditText(editTexts);
 
         Helper.enableRadioGroup(mRgSex);
-    }
-
-    private void readData() {
-        try {
-            File file = new File(directory, data_file);
-
-            FileInputStream fileIn = new FileInputStream(file);
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            ProfileData = (HashMap<String, String>) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (Exception e) {
-            System.out.println(e.getStackTrace());
-        }
     }
 
     private void displayData() {

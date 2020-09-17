@@ -144,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:gravity="bottom"
-                    android:hint="lbs"
+                    android:hint="lbs/week"
                     android:inputType="number" />
 
             </LinearLayout>
@@ -167,7 +167,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="lbs"
+                    android:hint="lbs/week"
                     android:inputType="number" />
             </LinearLayout>
 
@@ -196,11 +196,11 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/BMIOutput"
+                android:id="@+id/BMROutput"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:gravity="center"
-                android:text="Your BMI:" />
+                android:text="Your BMR:" />
 
             <TextView
                 android:id="@+id/CaloriesOutput"
