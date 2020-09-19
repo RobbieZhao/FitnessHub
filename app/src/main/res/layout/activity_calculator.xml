@@ -92,6 +92,7 @@
             android:orientation="horizontal">
 
             <RadioGroup
+                android:id="@+id/RgStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -130,6 +131,7 @@
             android:orientation="horizontal">
 
             <RadioGroup
+                android:id="@+id/RgGoal"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start">
@@ -164,7 +166,7 @@
                 android:orientation="vertical">
 
                 <EditText
-                    android:id="@+id/editTextNumber"
+                    android:id="@+id/EtGainWeight"
                     android:layout_width="100dp"
                     android:layout_height="32dp"
                     android:ems="10"
@@ -174,7 +176,7 @@
                     android:textSize="11sp" />
 
                 <EditText
-                    android:id="@+id/editTextNumber2"
+                    android:id="@+id/EtLoseWeight"
                     android:layout_width="100dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -210,14 +212,14 @@
 
                 <TextView
                     android:id="@+id/BMROutput"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginRight="150dp"
                     android:gravity="center"
                     android:text="BMR:" />
 
                 <TextView
-                    android:id="@+id/BMROutput"
+                    android:id="@+id/BMIOutput"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -228,15 +230,14 @@
                 android:id="@+id/CaloriesOutput"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:gravity="center"
-                android:text="Calories/week" />
+                android:gravity="center" />
 
             <TextView
                 android:id="@+id/EatingHabitOutput"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="EatingHabit" />
+                android:lines="2" />
 
         </LinearLayout>
 
