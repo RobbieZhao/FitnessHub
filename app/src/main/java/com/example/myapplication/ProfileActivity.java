@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -16,18 +15,8 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 
 
@@ -75,7 +64,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             userMode = "VIEW";
             mButtonSubmit.setText("Edit");
-            ProfileData = Helper.readData(directory, Helper.data_file);
+            ProfileData = Utils.readData(directory, Utils.data_file);
             displayData();
             disableInputs();
         }
@@ -121,8 +110,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             mIvProfile.setImageBitmap(photo);
 
             //Open a file and write to it
-            if(Helper.isExternalStorageWritable()){
-                if (Helper.saveImage(photo, directory, Helper.image_file)) {
+            if(Utils.isExternalStorageWritable()){
+                if (Utils.saveImage(photo, directory, Utils.image_file)) {
                     Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
                 }
             } else {
@@ -156,21 +145,21 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         collectHeight();
         collectWeight();
 
-        if (!Helper.storeData(ProfileData, directory, Helper.data_file))
+        if (!Utils.storeData(ProfileData, directory, Utils.data_file))
             throw new Exception("File not saved");
     }
 
     private void enableInputs() {
         ArrayList<EditText> editTexts = new ArrayList(
                 Arrays.asList(mEtUsername, mEtAge, mEtCountry, mEtCity, mEtFoot, mEtInch, mEtWeight));
-        Helper.enableEditText(editTexts);
+        Utils.enableEditText(editTexts);
 
-        Helper.enableRadioGroup(mRgSex);
+        Utils.enableRadioGroup(mRgSex);
     }
 
     private void displayData() {
         //Set the ImageView
-        Bitmap thumbnailImage = BitmapFactory.decodeFile(directory + "/" + Helper.image_file);
+        Bitmap thumbnailImage = BitmapFactory.decodeFile(directory + "/" + Utils.image_file);
         if(thumbnailImage!=null){
             mIvProfile.setImageBitmap(thumbnailImage);
         }
@@ -196,9 +185,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private void disableInputs() {
         ArrayList<EditText> editTexts = new ArrayList(
                 Arrays.asList(mEtUsername, mEtAge, mEtCountry, mEtCity, mEtFoot, mEtInch, mEtWeight));
-        Helper.disableEditText(editTexts);
+        Utils.disableEditText(editTexts);
 
-        Helper.disableRadioGroup(mRgSex);
+        Utils.disableRadioGroup(mRgSex);
     }
 
     private String getValueFromMap(HashMap<String, String> hashMap, String key) {
@@ -219,7 +208,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void collectAge() {
-        int age = Helper.getIntegerInput(mEtAge);
+        int age = Utils.getIntegerInput(mEtAge);
 
         if (age > 0)
             ProfileData.put("age", Integer.toString(age));
@@ -248,10 +237,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void collectHeight() throws Exception {
-        int foot = Helper.getIntegerInput(mEtFoot);
-        int inch = Helper.getIntegerInput(mEtInch);
+        int foot = Utils.getIntegerInput(mEtFoot);
+        int inch = Utils.getIntegerInput(mEtInch);
 
-        String[] messages = Helper.checkHeightInput(foot, inch, false);
+        String[] messages = Utils.checkHeightInput(foot, inch, false);
         if (!messages[0].isEmpty() && !messages[1].isEmpty()) {
             Toast.makeText(this, messages[0], Toast.LENGTH_SHORT).show();
             throw new Exception(messages[1]);
@@ -264,7 +253,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void collectWeight() throws Exception {
-        double weight = Helper.getDoubleInput(mEtWeight);
+        double weight = Utils.getDoubleInput(mEtWeight);
 
         if (weight == 0) {
             Toast.makeText(this,"Weight can't be 0!",Toast.LENGTH_SHORT).show();

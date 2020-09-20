@@ -10,7 +10,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class CalculatorActivity extends AppCompatActivity implements View.OnClickListener {
@@ -48,14 +47,14 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.gainWeight) {
-                    Helper.enableEditText(mEtGainWeight);
-                    Helper.disableEditText(mEtLoseWeight);
+                    Utils.enableEditText(mEtGainWeight);
+                    Utils.disableEditText(mEtLoseWeight);
                 } else if (checkedId == R.id.loseWeight) {
-                    Helper.enableEditText(mEtLoseWeight);
-                    Helper.disableEditText(mEtGainWeight);
+                    Utils.enableEditText(mEtLoseWeight);
+                    Utils.disableEditText(mEtGainWeight);
                 } else {
-                    Helper.disableEditText(mEtLoseWeight);
-                    Helper.disableEditText(mEtGainWeight);
+                    Utils.disableEditText(mEtLoseWeight);
+                    Utils.disableEditText(mEtGainWeight);
                 }
             }
         });
@@ -72,7 +71,7 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void displayData() {
-        ProfileData = Helper.readData(getFilesDir().getAbsolutePath(), Helper.data_file);
+        ProfileData = Utils.readData(getFilesDir().getAbsolutePath(), Utils.data_file);
 
         if (ProfileData.containsKey("foot"))
             mEtFoot.setText(ProfileData.get("foot"));
@@ -97,8 +96,8 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
                 mRgGoal.check(R.id.maintainWeight);
             }
         } else {
-            Helper.disableEditText(mEtGainWeight);
-            Helper.disableEditText(mEtLoseWeight);
+            Utils.disableEditText(mEtGainWeight);
+            Utils.disableEditText(mEtLoseWeight);
         }
     }
 
@@ -111,11 +110,11 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
             boolean status = isActive();
             double goal = getGoal();
 
-            int totalInches = Helper.calculateTotalInches(height[0], height[1]);
+            int totalInches = Utils.calculateTotalInches(height[0], height[1]);
 
-            double BMR = Helper.calculateBMR(weight, totalInches, age, isMale);
-            double BMI = Helper.calculateBMI(weight, totalInches);
-            double dailyCalorie = Helper.calculateCaloriesIntake(BMR, status, goal);
+            double BMR = Utils.calculateBMR(weight, totalInches, age, isMale);
+            double BMI = Utils.calculateBMI(weight, totalInches);
+            double dailyCalorie = Utils.calculateCaloriesIntake(BMR, status, goal);
 
             mTvBMR.setText("BMR: " + String.format("%.2f", BMR));
             mTvBMI.setText("BMI: " + String.format("%.2f", BMI));
@@ -136,17 +135,17 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
                 ProfileData.put("status", "sedentary");
             ProfileData.put("goal", Double.toString(goal));
 
-            Helper.storeData(ProfileData, getFilesDir().getAbsolutePath(), Helper.data_file);
+            Utils.storeData(ProfileData, getFilesDir().getAbsolutePath(), Utils.data_file);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private int[] getHeight() throws Exception {
-        int foot = Helper.getIntegerInput(mEtFoot);
-        int inch = Helper.getIntegerInput(mEtInch);
+        int foot = Utils.getIntegerInput(mEtFoot);
+        int inch = Utils.getIntegerInput(mEtInch);
 
-        String[] messages = Helper.checkHeightInput(foot, inch, true);
+        String[] messages = Utils.checkHeightInput(foot, inch, true);
         if (!messages[0].isEmpty() && !messages[1].isEmpty()) {
             Toast.makeText(this, messages[0], Toast.LENGTH_SHORT).show();
             throw new Exception(messages[1]);
@@ -166,7 +165,7 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
     }
 
     private double getWeight() throws Exception {
-        double weight = Helper.getDoubleInput(mEtWeight);
+        double weight = Utils.getDoubleInput(mEtWeight);
 
         if (weight == -1) {
             Toast.makeText(this, "Please enter weight!", Toast.LENGTH_SHORT).show();
@@ -208,7 +207,7 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
 
         double goal;
         if (selectedID == R.id.loseWeight) {
-            goal = Helper.getDoubleInput(mEtLoseWeight);
+            goal = Utils.getDoubleInput(mEtLoseWeight);
             if (goal == -1) {
                 Toast.makeText(this, "Please enter goal!", Toast.LENGTH_SHORT).show();
                 throw new Exception("Empty lose weight goal");
@@ -217,7 +216,7 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
         } else if (selectedID == R.id.maintainWeight) {
             goal = 0;
         } else if (selectedID == R.id.gainWeight) {
-            goal = Helper.getDoubleInput(mEtGainWeight);
+            goal = Utils.getDoubleInput(mEtGainWeight);
             if (goal == -1) {
                 Toast.makeText(this, "Please enter goal!", Toast.LENGTH_SHORT).show();
                 throw new Exception("Empty gain weight goal");

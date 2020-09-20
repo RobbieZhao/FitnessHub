@@ -1,14 +1,28 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button mButtonCalculator, mButtonWeather, mButtonMap, mButtonProfile;
 
@@ -58,7 +72,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void openWeather() {
-
+        Intent myIntent = new Intent(HomeActivity.this, WeatherActivity.class);
+        HomeActivity.this.startActivity(myIntent);
     }
 
     private void openMap() {

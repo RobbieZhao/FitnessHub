@@ -16,7 +16,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Helper {
+public class Utils {
 
     public static final String data_file = "userdata.txt";
 
