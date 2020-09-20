@@ -18,8 +18,9 @@
         android:theme="@style/AppTheme">
         <activity android:name="com.example.lifestyle.WeatherActivity"></activity>
         <activity android:name="com.example.lifestyle.CalculatorActivity" />
-        <activity android:name="com.example.lifestyle.LoginActivity" />
-        <activity android:name="com.example.lifestyle.HomeActivity">
+        <activity android:name="com.example.lifestyle.HomeActivity" />
+        <activity android:name="com.example.lifestyle.LoginActivity"
+            android:theme="@style/AppFullScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
