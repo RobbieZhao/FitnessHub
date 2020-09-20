@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.myapplication">
+    package="com.example.lifestyle">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,10 +16,10 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".WeatherActivity"></activity>
-        <activity android:name=".CalculatorActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".HomeActivity">
+        <activity android:name="com.example.lifestyle.WeatherActivity"></activity>
+        <activity android:name="com.example.lifestyle.CalculatorActivity" />
+        <activity android:name="com.example.lifestyle.LoginActivity" />
+        <activity android:name="com.example.lifestyle.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,8 +27,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ProfileActivity"
-            android:parentActivityName=".LoginActivity" />
+            android:name="com.example.lifestyle.ProfileActivity"
+            android:parentActivityName="com.example.lifestyle.LoginActivity" />
     </application>
 
 </manifest>

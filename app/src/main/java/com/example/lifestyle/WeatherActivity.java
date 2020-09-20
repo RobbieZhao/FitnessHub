@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.lifestyle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,13 +8,9 @@ import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-
-import org.json.JSONObject;
 
 import java.net.URL;
 

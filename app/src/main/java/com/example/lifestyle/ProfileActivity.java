@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.lifestyle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

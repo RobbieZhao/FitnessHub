@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.lifestyle;
 
 public class WeatherData {
     private CurrentCondition mCurrentCondition = new CurrentCondition();
