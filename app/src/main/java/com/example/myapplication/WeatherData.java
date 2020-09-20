@@ -9,7 +9,6 @@ public class WeatherData {
         private String mCondition;
         private double mPressure;
         private int mHumidity;
-        private int mVisibility;
 
         public String getCondition() {
             return mCondition;
@@ -28,12 +27,6 @@ public class WeatherData {
         }
         public void setHumidity(int humidity) {
             mHumidity = humidity;
-        }
-        public int getVisibility() {
-            return mVisibility;
-        }
-        public void setVisibility(int visibility) {
-            mVisibility = visibility;
         }
     }
 

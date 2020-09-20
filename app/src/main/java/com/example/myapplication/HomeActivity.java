@@ -93,13 +93,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             case R.id.WeatherButton: {
-                updateLocation();
                 openWeather();
                 break;
             }
 
             case R.id.MapButton: {
-                updateLocation();
                 openMap();
                 break;
             }
@@ -111,16 +109,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void openCalculator() {
-        Intent myIntent = new Intent(HomeActivity.this, CalculatorActivity.class);
-        HomeActivity.this.startActivity(myIntent);
+        Intent calculatorIntent = new Intent(HomeActivity.this, CalculatorActivity.class);
+        HomeActivity.this.startActivity(calculatorIntent);
     }
 
     private void openWeather() {
-        Intent myIntent = new Intent(HomeActivity.this, WeatherActivity.class);
-        HomeActivity.this.startActivity(myIntent);
+        updateLocation();
+
+        Intent weatherIntent = new Intent(HomeActivity.this, WeatherActivity.class);
+        weatherIntent.putExtra("latitude", latitude);
+        weatherIntent.putExtra("longitude", longitude);
+        HomeActivity.this.startActivity(weatherIntent);
     }
 
     private void openMap() {
+        updateLocation();
+
         Uri searchUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=hike");
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, searchUri);
         if(mapIntent.resolveActivity(getPackageManager()) != null){
@@ -129,8 +133,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void openProfile() {
-        Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
-        intent.putExtra("ParentActivity", "HomeActivity");
-        HomeActivity.this.startActivity(intent);
+        Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
+        profileIntent.putExtra("ParentActivity", "HomeActivity");
+        HomeActivity.this.startActivity(profileIntent);
     }
 }

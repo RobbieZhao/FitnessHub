@@ -21,14 +21,16 @@ import java.net.URL;
 public class WeatherActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
 
     private TextView mTvWeather, mTvCurrentTemp, mTvMinTemp, mTvMaxTemp, mTvFeelsTemp,
-            mTvPressure, mTvHumidity, mTvVisibility, mTvWindSpeed;
+            mTvPressure, mTvHumidity, mTvWindSpeed;
 
-    private String location = "Salt&Lake&City,us";
+    private double latitude;
+    private double longitude;
 
     private WeatherData mWeatherData;
 
     private static final int SEARCH_LOADER = 11;
-    public static final String URL_STRING = "query";
+    public static final String LAT_STRING = "LATITUDE";
+    public static final String LON_STRING = "LONGITUDE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +44,23 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
         mTvFeelsTemp = findViewById(R.id.FeelsLikeTemp);
         mTvPressure = findViewById(R.id.Pressure);
         mTvHumidity = findViewById(R.id.Humidity);
-        mTvVisibility = findViewById(R.id.Visibility);
         mTvWindSpeed = findViewById(R.id.WindSpeed);
 
         getSupportLoaderManager().initLoader(SEARCH_LOADER, null, this);
-        loadWeatherData(location);
+
+        latitude = getIntent().getDoubleExtra("latitude", -360);
+        longitude = getIntent().getDoubleExtra("longitude", -360);
+
+        if (latitude != -360 && longitude != -360)
+            loadWeatherData(latitude, longitude);
     }
 
-    private void loadWeatherData(String location) {
+    private void loadWeatherData(double latitude, double longitude) {
         Bundle searchQueryBundle = new Bundle();
-        searchQueryBundle.putString(URL_STRING, location);
+
+        searchQueryBundle.putDouble(LAT_STRING, latitude);
+        searchQueryBundle.putDouble(LON_STRING, longitude);
+
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<String> searchLoader = loaderManager.getLoader(SEARCH_LOADER);
         if (searchLoader == null) {
@@ -83,9 +92,10 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
 
             @Override
             public String loadInBackground() {
-                String location = bundle.getString(URL_STRING);
-                URL weatherDataURL = WeatherUtils.buildURLFromString(location);
-                String jsonWeatherData = null;
+                double latitude = bundle.getDouble(LAT_STRING);
+                double longitude = bundle.getDouble(LON_STRING);
+                URL weatherDataURL = WeatherUtils.buildURLFromString(latitude, longitude);
+                String jsonWeatherData;
                 try {
                     jsonWeatherData = WeatherUtils.getDataFromURL(weatherDataURL);
                     return jsonWeatherData;
@@ -117,7 +127,6 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
 
                 mTvPressure.append(WeatherUtils.pressurePlusUnit(mWeatherData.getCurrentCondition().getPressure()));
                 mTvHumidity.append(mWeatherData.getCurrentCondition().getHumidity() + "%");
-                mTvVisibility.append(WeatherUtils.visibilityPlusUnit(mWeatherData.getCurrentCondition().getVisibility()));
                 mTvWindSpeed.append(WeatherUtils.windSpeedPlusUnit(Math.round(mWeatherData.getWind().getSpeed())));
             } catch (JSONException e) {
                 e.printStackTrace();

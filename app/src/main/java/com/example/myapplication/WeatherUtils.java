@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 
 public class WeatherUtils {
-    private static String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
+    private static String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?";
     private static String APPIDQUERY = "&appid=";
     private static final String app_id="51d2ee9441b8ede6bc0951007ce24ccd";
 
@@ -22,10 +22,11 @@ public class WeatherUtils {
     public static final String windSpeedUnit = "meter/sec";
     public static final String visibilityUnit = "meters";
 
-    public static URL buildURLFromString(String location){
+    public static URL buildURLFromString(double latitude, double longitude){
         URL myURL = null;
         try{
-            myURL = new URL(BASE_URL + location + APPIDQUERY + app_id);
+            String coordinate = "lat=" + latitude + "&" + "lon=" + longitude;
+            myURL = new URL(BASE_URL + coordinate + APPIDQUERY + app_id);
         }catch(MalformedURLException e){
             e.printStackTrace();
         }
@@ -74,7 +75,6 @@ public class WeatherUtils {
         currentCondition.setCondition(jsonWeather.getString("main"));
         currentCondition.setHumidity(jsonMain.getInt("humidity"));
         currentCondition.setPressure(jsonMain.getInt("pressure"));
-        currentCondition.setVisibility(jsonObject.getInt("visibility"));
         weatherData.setCurrentCondition(currentCondition);
 
         temperature.setMaxTemp(jsonMain.getDouble("temp_max"));
@@ -90,7 +90,7 @@ public class WeatherUtils {
     }
 
     public static String kelvinToCelsius(double kelvin_value) {
-        return "" + Math.round(kelvin_value - 273.15) + " °C";
+        return "" + Math.round(kelvin_value - 273.15) + " " + temperatureUnit;
     }
 
     public static String pressurePlusUnit(double pressure) {

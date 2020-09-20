@@ -141,24 +141,6 @@
             android:background="#303F9F" />
 
         <TextView
-            android:id="@+id/Visibility"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
-            android:fontFamily="monospace"
-            android:text="Visibility:"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#303F9F" />
-
-        <TextView
             android:id="@+id/WindSpeed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
