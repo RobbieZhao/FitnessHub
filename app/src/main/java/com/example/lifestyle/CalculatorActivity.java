@@ -3,6 +3,7 @@ package com.example.lifestyle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -227,5 +228,29 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
         }
 
         return goal;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //Put them in the outgoing Bundle
+        outState.putString("BMI", mTvBMI.getText().toString());
+        outState.putString("BMR", mTvBMR.getText().toString());
+        outState.putString("Calorie", mTvCalories.getText().toString());
+        outState.putString("Warning", mTvWarning.getText().toString());
+
+        //Save the view hierarchy
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        //Restore stuff
+        mTvBMI.setText(savedInstanceState.getString("BMI"));
+        mTvBMR.setText(savedInstanceState.getString("BMR"));
+        mTvCalories.setText(savedInstanceState.getString("Calorie"));
+        mTvWarning.setText(savedInstanceState.getString("Warning"));
+
+        //Restore the view hierarchy automatically
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }
