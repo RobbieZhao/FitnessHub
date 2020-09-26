@@ -46,6 +46,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         updateLocation();
+
+        getSupportActionBar().setTitle("Home");
     }
 
     private void updateLocation() {

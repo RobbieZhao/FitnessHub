@@ -49,6 +49,8 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
 
         if (latitude != -360 && longitude != -360)
             loadWeatherData(latitude, longitude);
+
+        getSupportActionBar().setTitle("Weather");
     }
 
     private void loadWeatherData(double latitude, double longitude) {

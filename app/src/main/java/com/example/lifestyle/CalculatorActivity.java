@@ -60,6 +60,8 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
             }
         });
         displayData();
+
+        getSupportActionBar().setTitle("Fitness Calculator");
     }
 
     @Override

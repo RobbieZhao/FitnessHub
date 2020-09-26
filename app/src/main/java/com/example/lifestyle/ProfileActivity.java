@@ -25,6 +25,8 @@ public class ProfileActivity extends ProfileBaseActivity implements View.OnClick
         displayData();
         mButtonSubmit.setText("Edit");
         mode = "VIEW";
+
+        getSupportActionBar().setTitle("Profile");
     }
 
     @Override
