@@ -12,8 +12,10 @@
         android:layout_height="match_parent"
         android:gravity="center|center_horizontal|center_vertical"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/UserImage"
@@ -45,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:text="Name(*)"
-                    android:textColor="#673AB7"
+                    android:textColor="#212F3C "
                     android:textStyle="bold" />
             </FrameLayout>
 
@@ -60,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="95dp"
                     android:text="Age"
-                    android:textColor="#673AB7"
+                    android:textColor="#212F3C "
                     android:textStyle="bold" />
             </FrameLayout>
 
@@ -113,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:text="Sex："
-                android:textColor="#673AB7"
+                android:textColor="#212F3C "
                 android:textStyle="bold" />
 
             <RadioGroup
@@ -143,7 +145,7 @@
             android:layout_height="wrap_content"
             android:gravity="start|left"
             android:text="Location"
-            android:textColor="#673AB7"
+            android:textColor="#212F3C "
             android:textStyle="bold" />
 
         <LinearLayout
@@ -197,7 +199,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Height"
-                    android:textColor="#673AB7"
+                    android:textColor="#212F3C "
                     android:textStyle="bold" />
             </FrameLayout>
 
@@ -211,7 +213,7 @@
                     android:layout_width="92dp"
                     android:layout_height="wrap_content"
                     android:text="Weight"
-                    android:textColor="#673AB7"
+                    android:textColor="#212F3C "
                     android:textStyle="bold" />
             </FrameLayout>
 

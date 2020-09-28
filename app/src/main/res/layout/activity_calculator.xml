@@ -166,8 +166,7 @@
                     android:id="@+id/RgGoal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="start"
-                    android:layout_marginRight="50dp">
+                    android:layout_gravity="start">
 
                     <RadioButton
                         android:id="@+id/gainWeight"
@@ -232,7 +231,7 @@
             android:id="@+id/GetMyPlanButton"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="#673AB7"
+            android:background="#224F71"
             android:gravity="center_horizontal|center_vertical"
             android:text="Get My Plan"
             android:textColor="@android:color/background_light"
