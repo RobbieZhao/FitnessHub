@@ -1,54 +1,27 @@
 package com.example.lifestyle;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toolbar;
 
-import java.util.HashMap;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
-public class NewUserActivity extends ProfileBaseActivity implements View.OnClickListener{
+public class NewUserActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_blank);
 
-        setUp();
+        ProfileFragment fragment = new ProfileFragment();
 
-        ProfileData = new HashMap<>();
+        Bundle bundle = new Bundle();
+        bundle.putString("MODE", "NEW_USER");
+        fragment.setArguments(bundle);
 
-        mIvProfile.setOnClickListener(this);
-        mButtonSubmit.setOnClickListener(this);
-
-        directory = getFilesDir().getAbsolutePath();
+        FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+        fTrans.replace(R.id.whole_screen, fragment, "profile_fragment");
+        fTrans.commit();
 
         getSupportActionBar().setTitle("Welcome to LifeStyle!");
     }
-
-    @Override
-    public void onClick(View view) {
-        switch(view.getId()) {
-            case R.id.UserImage: {
-                startCamera();
-                break;
-            }
-
-            case R.id.SubmitButtonUsers: {
-                goToHomeActivity();
-            }
-        }
-    }
-
-    private void goToHomeActivity() {
-        try {
-            saveInputs();
-
-            Intent myIntent = new Intent(NewUserActivity.this, HomeActivity.class);
-            NewUserActivity.this.startActivity(myIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }

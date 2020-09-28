@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="#3F51B5"
-            android:text="Fitness Calculator"
+            android:text="@string/calculator_module_name"
             android:textColor="@android:color/background_light"
             android:textStyle="bold" />
 
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="#FFBF00"
-            android:text="Weather"
+            android:text="@string/weather_module_name"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
 
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="#4CAF50"
-            android:text="Map"
+            android:text="@string/map_module_name"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
 
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="#9C27B0"
-            android:text="Profile"
+            android:text="@string/profile_module_name"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </LinearLayout>

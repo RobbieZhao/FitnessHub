@@ -87,7 +87,7 @@ public class Utils {
             return messages;
         }
 
-        if (inch >= 13) {
+        if (inch >= 12) {
             messages[0] = "Inch must be 0-11!";
             messages[1] = "Invalid inches";
         } else if (foot == 0 && inch == 0) {
@@ -95,7 +95,6 @@ public class Utils {
             messages[1] = "Invalid height";
         }
 
-        messages[0] = "";
         return messages;
     }
 

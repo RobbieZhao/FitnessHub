@@ -3,6 +3,7 @@ package com.example.lifestyle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Intent;
@@ -33,21 +34,31 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        mButtonCalculator = findViewById(R.id.CalculatorButton);
-        mButtonWeather = findViewById(R.id.WeatherButton);
-        mButtonMap = findViewById(R.id.MapButton);
-        mButtonProfile = findViewById(R.id.ProfileButton);
-
-        mButtonCalculator.setOnClickListener(this);
-        mButtonWeather.setOnClickListener(this);
-        mButtonMap.setOnClickListener(this);
-        mButtonProfile.setOnClickListener(this);
+        getSupportActionBar().setTitle("Home");
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         updateLocation();
 
-        getSupportActionBar().setTitle("Home");
+        if (isTablet()) {
+            ModuleFragment moduleFragment = new ModuleFragment();
+            FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+            fTrans.replace(R.id.tablet_left, moduleFragment,"module");
+            fTrans.commit();
+        } else {
+            mButtonCalculator = findViewById(R.id.CalculatorButton);
+            mButtonWeather = findViewById(R.id.WeatherButton);
+            mButtonMap = findViewById(R.id.MapButton);
+            mButtonProfile = findViewById(R.id.ProfileButton);
+
+            mButtonCalculator.setOnClickListener(this);
+            mButtonWeather.setOnClickListener(this);
+            mButtonMap.setOnClickListener(this);
+            mButtonProfile.setOnClickListener(this);
+        }
+    }
+
+    private boolean isTablet() {
+        return getResources().getBoolean(R.bool.isTablet);
     }
 
     private void updateLocation() {
@@ -56,21 +67,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
-                    Location location = task.getResult();
-                    if (location != null) {
-                        try {
-                            Geocoder geocoder = new Geocoder(HomeActivity.this,
-                                    Locale.getDefault());
-                            List<Address> addresses = geocoder.getFromLocation(
-                                    location.getLatitude(), location.getLongitude(), 1
-                            );
+                Location location = task.getResult();
+                if (location != null) {
+                    try {
+                        Geocoder geocoder = new Geocoder(HomeActivity.this,
+                                Locale.getDefault());
+                        List<Address> addresses = geocoder.getFromLocation(
+                                location.getLatitude(), location.getLongitude(), 1
+                        );
 
-                            latitude = addresses.get(0).getLatitude();
-                            longitude = addresses.get(0).getLongitude();
-                        } catch (Exception e) {
+                        latitude = addresses.get(0).getLatitude();
+                        longitude = addresses.get(0).getLongitude();
+                    } catch (Exception e) {
 
-                        }
                     }
+                }
                 }
             });
         } else {
@@ -102,33 +113,63 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void openCalculator() {
-        Intent calculatorIntent = new Intent(HomeActivity.this, CalculatorActivity.class);
-        HomeActivity.this.startActivity(calculatorIntent);
+    public void openCalculator() {
+        if (isTablet()) {
+            FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+            fTrans.replace(R.id.tablet_right, new CalculatorFragment(),"calculator");
+            fTrans.commit();
+        } else {
+            Intent calculatorIntent = new Intent(HomeActivity.this, CalculatorActivity.class);
+            HomeActivity.this.startActivity(calculatorIntent);
+        }
     }
 
-    private void openWeather() {
+    public void openWeather() {
         updateLocation();
 
-        Intent weatherIntent = new Intent(HomeActivity.this, WeatherActivity.class);
-        weatherIntent.putExtra("latitude", latitude);
-        weatherIntent.putExtra("longitude", longitude);
-        HomeActivity.this.startActivity(weatherIntent);
+        if (isTablet()) {
+            WeatherFragment fragment = new WeatherFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putDouble("latitude", latitude);
+            bundle.putDouble("longitude", longitude);
+            fragment.setArguments(bundle);
+
+            FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+            fTrans.replace(R.id.tablet_right, fragment,"weather");
+            fTrans.commit();
+        } else {
+            Intent weatherIntent = new Intent(HomeActivity.this, WeatherActivity.class);
+            weatherIntent.putExtra("latitude", latitude);
+            weatherIntent.putExtra("longitude", longitude);
+            HomeActivity.this.startActivity(weatherIntent);
+        }
     }
 
-    private void openMap() {
+    public void openMap() {
         updateLocation();
 
         Uri searchUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=hike");
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, searchUri);
-        if(mapIntent.resolveActivity(getPackageManager()) != null){
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(mapIntent);
         }
     }
 
-    private void openProfile() {
-        Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
-        profileIntent.putExtra("ParentActivity", "HomeActivity");
-        HomeActivity.this.startActivity(profileIntent);
+    public void openProfile() {
+        if (isTablet()) {
+            ProfileFragment fragment = new ProfileFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("MODE", "VIEW");
+            fragment.setArguments(bundle);
+
+            FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+            fTrans.replace(R.id.tablet_right, fragment,"profile_fragment");
+            fTrans.commit();
+        } else {
+            Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
+            HomeActivity.this.startActivity(profileIntent);
+        }
     }
 }

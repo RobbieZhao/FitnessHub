@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/calculator_module"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#3F51B5"
+        android:text="@string/calculator_module_name" />
+
+    <Button
+        android:id="@+id/weather_module"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#FFBF00"
+        android:text="@string/weather_module_name" />
+
+    <Button
+        android:id="@+id/map_module"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#4CAF50"
+        android:text="@string/map_module_name" />
+
+    <Button
+        android:id="@+id/profile_module"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#9C27B0"
+        android:text="@string/profile_module_name" />
+</LinearLayout>

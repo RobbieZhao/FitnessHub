@@ -5,61 +5,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
-public class ProfileActivity extends ProfileBaseActivity implements View.OnClickListener {
 
-    // VIEW or EDIT
-    private static String mode;
+public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_blank);
 
-        setUp();
+        ProfileFragment fragment = new ProfileFragment();
 
-        mIvProfile.setOnClickListener(this);
-        mButtonSubmit.setOnClickListener(this);
+        Bundle bundle = new Bundle();
+        bundle.putString("MODE", "VIEW");
+        fragment.setArguments(bundle);
 
-        disableInputs();
-        displayData();
-        mButtonSubmit.setText("Edit");
-        mode = "VIEW";
+        FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+        fTrans.replace(R.id.whole_screen, fragment, "profile_fragment");
+        fTrans.commit();
 
         getSupportActionBar().setTitle("Profile");
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch(view.getId()) {
-            case R.id.UserImage: {
-                if (mode.equals("EDIT"))
-                    startCamera();
-                break;
-            }
-
-            case R.id.SubmitButtonUsers: {
-                handleButtonClick();
-            }
-        }
-    }
-
-    private void handleButtonClick() {
-        if (mode.equals("EDIT")) {
-            try {
-                saveInputs();
-
-                Intent myIntent = new Intent(ProfileActivity.this, HomeActivity.class);
-                ProfileActivity.this.startActivity(myIntent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            // Change from VIEW mode to EDIT mode
-            mode = "EDIT";
-            mButtonSubmit.setText("Save");
-            enableInputs();
-        }
     }
 }
 

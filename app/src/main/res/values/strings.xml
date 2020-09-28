@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">My Lifestyle</string>
+    <string name="calculator_module_name">Fitness Calculator</string>
+    <string name="weather_module_name">Weather</string>
+    <string name="map_module_name">Hikes Near Me</string>
+    <string name="profile_module_name">My Profile</string>
 </resources>
