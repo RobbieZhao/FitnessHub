@@ -157,62 +157,74 @@
             android:layout_gravity="start"
             android:orientation="horizontal">
 
-            <RadioGroup
-                android:id="@+id/RgGoal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginRight="50dp">
-
-                <RadioButton
-                    android:id="@+id/gainWeight"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="Gain Weight:  " />
-
-                <RadioButton
-                    android:id="@+id/loseWeight"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="Lose Weight: "
-                    android:textColor="@android:color/background_dark" />
-
-                <RadioButton
-                    android:id="@+id/maintainWeight"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="Maintain Weight" />
-
-            </RadioGroup>
-
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-                <EditText
-                    android:id="@+id/EtGainWeight"
-                    android:layout_width="100dp"
-                    android:layout_height="32dp"
-                    android:ems="10"
-                    android:gravity="bottom"
-                    android:hint="lbs/week"
-                    android:inputType="number"
-                    android:textSize="11sp" />
+                <RadioGroup
+                    android:id="@+id/RgGoal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:layout_marginRight="50dp">
 
-                <EditText
-                    android:id="@+id/EtLoseWeight"
-                    android:layout_width="100dp"
-                    android:layout_height="32dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="lbs/week"
-                    android:inputType="number"
-                    android:textSize="11sp" />
-            </LinearLayout>
+                    <RadioButton
+                        android:id="@+id/gainWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="Gain Weight:  " />
+
+                    <RadioButton
+                        android:id="@+id/loseWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="Lose Weight: "
+                        android:textColor="@android:color/background_dark" />
+
+                    <RadioButton
+                        android:id="@+id/maintainWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="Maintain Weight" />
+
+                </RadioGroup>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/EtGainWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:gravity="bottom"
+                        android:hint="lbs/week"
+                        android:inputType="number"
+                        android:textSize="11sp" />
+
+                    <EditText
+                        android:id="@+id/EtLoseWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="lbs/week"
+                        android:inputType="number"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </FrameLayout>
 
         </LinearLayout>
 
@@ -233,34 +245,35 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="start"
-                    android:layout_marginRight="150dp"
+                    android:layout_gravity="center"
                     android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/BMROutput"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="BMR:" />
                 </FrameLayout>
 
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/BMIOutput"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="BMI:" />
                 </FrameLayout>
 
