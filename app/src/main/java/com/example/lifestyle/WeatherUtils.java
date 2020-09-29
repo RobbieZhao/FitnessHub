@@ -20,7 +20,6 @@ public class WeatherUtils {
     public static final String temperatureUnit = "°C";
     public static final String pressureUnit = "hPa";
     public static final String windSpeedUnit = "meter/sec";
-    public static final String visibilityUnit = "meters";
 
     public static URL buildURLFromString(double latitude, double longitude){
         URL myURL = null;
@@ -99,9 +98,5 @@ public class WeatherUtils {
 
     public static String windSpeedPlusUnit(double windSpeed) {
         return "" + windSpeed + " " + windSpeedUnit;
-    }
-
-    public static String visibilityPlusUnit(int visibility) {
-        return "" + visibility + " " + visibilityUnit;
     }
 }
