@@ -9,7 +9,6 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 public class ModuleFragment extends Fragment implements View.OnClickListener {
     private Button mButtonCalculator, mButtonWeather, mButtonMap, mButtonProfile;
@@ -55,21 +54,6 @@ public class ModuleFragment extends Fragment implements View.OnClickListener {
                 ((HomeActivity) getActivity()).openProfile();
             }
         }
-    }
-
-    private void openCalculator() {
-    }
-
-    private void openWeather() {
-
-    }
-
-    private void openMap() {
-
-    }
-
-    private void openProfile() {
-
     }
 }
 
