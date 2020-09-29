@@ -242,10 +242,10 @@
                         android:layout_weight="1">
 
                         <EditText
-                            android:id="@+id/EditTextHeightInch"
+                            android:id="@+id/EditTextHeightFoot"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="inch"
+                            android:hint="foot"
                             android:inputType="number"
                             android:maxLength="2" />
                     </FrameLayout>
@@ -256,10 +256,10 @@
                         android:layout_weight="1">
 
                         <EditText
-                            android:id="@+id/EditTextHeightFoot"
+                            android:id="@+id/EditTextHeightInch"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="foot"
+                            android:hint="inch"
                             android:inputType="number"
                             android:maxLength="2" />
                     </FrameLayout>
