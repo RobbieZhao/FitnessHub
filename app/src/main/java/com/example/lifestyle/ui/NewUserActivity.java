@@ -1,12 +1,17 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.example.lifestyle.ProfileViewModel;
+import com.example.lifestyle.R;
 
 public class NewUserActivity extends AppCompatActivity {
 
+    private ProfileViewModel mProfileViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,5 +28,12 @@ public class NewUserActivity extends AppCompatActivity {
         fTrans.commit();
 
         getSupportActionBar().setTitle("Welcome to LifeStyle!");
+//        mProfileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+
     }
+
+    public ProfileViewModel getmProfileViewModel(){
+        return mProfileViewModel;
+    }
+
 }

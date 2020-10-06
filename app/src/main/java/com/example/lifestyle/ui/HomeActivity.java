@@ -1,4 +1,4 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.lifestyle.R;
+import com.example.lifestyle.WeatherViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +31,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Button mButtonCalculator, mButtonWeather, mButtonMap, mButtonProfile;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private double latitude, longitude;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,21 +70,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
-                Location location = task.getResult();
-                if (location != null) {
-                    try {
-                        Geocoder geocoder = new Geocoder(HomeActivity.this,
-                                Locale.getDefault());
-                        List<Address> addresses = geocoder.getFromLocation(
-                                location.getLatitude(), location.getLongitude(), 1
-                        );
+                    Location location = task.getResult();
+                    if (location != null) {
+                        try {
+                            Geocoder geocoder = new Geocoder(HomeActivity.this,
+                                    Locale.getDefault());
+                            List<Address> addresses = geocoder.getFromLocation(
+                                    location.getLatitude(), location.getLongitude(), 1
+                            );
 
-                        latitude = addresses.get(0).getLatitude();
-                        longitude = addresses.get(0).getLongitude();
-                    } catch (Exception e) {
+                            latitude = addresses.get(0).getLatitude();
+                            longitude = addresses.get(0).getLongitude();
+                        } catch (Exception e) {
 
+                        }
                     }
-                }
                 }
             });
         } else {

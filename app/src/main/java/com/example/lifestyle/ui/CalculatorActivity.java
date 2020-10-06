@@ -1,9 +1,11 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+
+import com.example.lifestyle.R;
 
 public class CalculatorActivity extends AppCompatActivity {
 

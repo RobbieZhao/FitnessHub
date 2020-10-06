@@ -1,4 +1,4 @@
-package com.example.lifestyle;
+package com.example.lifestyle.data;
 
 public class WeatherData {
     private CurrentCondition mCurrentCondition = new CurrentCondition();
@@ -94,4 +94,3 @@ public class WeatherData {
         return mWind;
     }
 }
-

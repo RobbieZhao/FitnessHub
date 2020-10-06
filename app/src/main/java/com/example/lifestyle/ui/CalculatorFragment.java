@@ -1,4 +1,4 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.lifestyle.ProfileViewModel;
+import com.example.lifestyle.R;
+
 import java.util.HashMap;
 
 public class CalculatorFragment extends Fragment implements View.OnClickListener {
@@ -27,9 +30,12 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     private String directory;
     private Activity activity;
 
+    private ProfileViewModel mprofileviewmodel;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        System.out.print("we are here");
         return inflater.inflate(R.layout.activity_calculator,container,false);
     }
 

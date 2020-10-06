@@ -1,4 +1,4 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.lifestyle.R;
+import com.example.lifestyle.ui.HomeActivity;
 
 public class ModuleFragment extends Fragment implements View.OnClickListener {
     private Button mButtonCalculator, mButtonWeather, mButtonMap, mButtonProfile;

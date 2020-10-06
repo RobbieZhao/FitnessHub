@@ -1,4 +1,6 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
+
+import com.example.lifestyle.data.WeatherData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,7 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
-
 
 public class WeatherUtils {
     private static String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?";

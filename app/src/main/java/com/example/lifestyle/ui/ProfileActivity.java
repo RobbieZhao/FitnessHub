@@ -1,12 +1,12 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.example.lifestyle.R;
 
 
 public class ProfileActivity extends AppCompatActivity {

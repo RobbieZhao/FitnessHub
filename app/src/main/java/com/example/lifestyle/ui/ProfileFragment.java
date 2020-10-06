@@ -1,4 +1,4 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +18,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.lifestyle.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

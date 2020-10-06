@@ -1,4 +1,4 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
 
 import android.graphics.Bitmap;
 import android.os.Environment;

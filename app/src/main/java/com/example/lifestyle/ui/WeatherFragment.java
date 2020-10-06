@@ -1,4 +1,101 @@
-package com.example.lifestyle;
+package com.example.lifestyle.ui;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
+
+import com.example.lifestyle.R;
+import com.example.lifestyle.WeatherViewModel;
+import com.example.lifestyle.data.WeatherData;
+
+import org.json.JSONException;
+
+import java.net.URL;
+
+//public class WeatherFragment extends Fragment implements View.OnClickListener {
+//    private TextView mTvWeather, mTvCurrentTemp, mTvMinTemp, mTvMaxTemp, mTvFeelsTemp,
+//            mTvPressure, mTvHumidity, mTvWindSpeed;
+//
+//
+//
+//    private double latitude;
+//    private double longitude;
+//
+//    private WeatherViewModel mWeatherViewModel;
+//
+//    private WeatherData mWeatherData;
+//
+//    private static final int SEARCH_LOADER = 11;
+//    public static final String LAT_STRING = "LATITUDE";
+//    public static final String LON_STRING = "LONGITUDE";
+//
+//    @Nullable
+//    @Override
+//    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+//        return inflater.inflate(R.layout.activity_weather,container,false);
+//    }
+//
+//    @Override
+//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+//        mTvWeather = getView().findViewById(R.id.Weather);
+//        mTvCurrentTemp = getView().findViewById(R.id.CurrentTemperature);
+//        mTvMinTemp = getView().findViewById(R.id.MinTemperature);
+//        mTvMaxTemp = getView().findViewById(R.id.MaxTemperature);
+//        mTvFeelsTemp = getView().findViewById(R.id.FeelsLikeTemp);
+//        mTvPressure = getView().findViewById(R.id.Pressure);
+//        mTvHumidity = getView().findViewById(R.id.Humidity);
+//        mTvWindSpeed = getView().findViewById(R.id.WindSpeed);
+//
+//        latitude = getArguments().getDouble("latitude");
+//        longitude = getArguments().getDouble("longitude");
+//        //loadWeatherData(latitude, longitude);
+//
+//        //(getActivity()).getSupportLoaderManager().initLoader(SEARCH_LOADER, null, this);
+//
+//        mWeatherViewModel.getData().observe(getViewLifecycleOwner(),nameObserver);
+//
+//    }
+//
+//    //create an observer that watches the LiveData<WeatherData> object
+//    final Observer<WeatherData> nameObserver  = new Observer<WeatherData>() {
+//        @Override
+//        public void onChanged(@Nullable final WeatherData weatherData) {
+//            // Update the UI if this data variable changes
+//            if(weatherData!=null) {
+//                mTvCurrentTemp.setText(WeatherUtils.kelvinToCelsius(mWeatherData.getTemperature().getTemp()));
+//                mTvHumidity.setText(mWeatherData.getCurrentCondition().getHumidity() + "%");
+//                mTvPressure.setText(WeatherUtils.pressurePlusUnit(mWeatherData.getCurrentCondition().getPressure()));
+//            }
+//        }
+//    };
+//
+//    public void onClick(View view) {
+//        switch(view.getId()){
+//            case R.id.SubmitButtonUsers:{
+//                //Get the string from the edit text and sanitize the input
+//                //String inputFromEt = mEtLocation.getText().toString().replace(' ','&');
+//                String input_a = String.valueOf(latitude);
+//                String input_b = String.valueOf(longitude);
+//                 loadWeatherData(input_a+input_b);
+//            }
+//            break;
+//        }
+//    }
+//
+//    void loadWeatherData(String location){
+//        //pass the location in to the view model
+//        mWeatherViewModel.setLocation(location);
+//    }
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +109,9 @@ import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
+
+import com.example.lifestyle.R;
+import com.example.lifestyle.data.WeatherData;
 
 import org.json.JSONException;
 
@@ -140,3 +240,5 @@ public class WeatherFragment extends Fragment implements LoaderManager.LoaderCal
 
     }
 }
+
+

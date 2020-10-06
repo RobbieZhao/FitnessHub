@@ -16,9 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".ui.HomeActivity" />
         <activity
-            android:name=".LoginActivity">
+            android:name=".ui.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,17 +26,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewUserActivity"
-            android:parentActivityName=".LoginActivity" />
+            android:name=".ui.NewUserActivity"
+            android:parentActivityName=".ui.LoginActivity" />
         <activity
-            android:name=".ProfileActivity"
-            android:parentActivityName=".HomeActivity" />
+            android:name=".ui.ProfileActivity"
+            android:parentActivityName=".ui.HomeActivity" />
         <activity
-            android:name=".CalculatorActivity"
-            android:parentActivityName=".HomeActivity" />
+            android:name=".ui.CalculatorActivity"
+            android:parentActivityName=".ui.HomeActivity" />
         <activity
-            android:name=".WeatherActivity"
-            android:parentActivityName=".HomeActivity" />
+            android:name=".ui.WeatherActivity"
+            android:parentActivityName=".ui.HomeActivity" />
     </application>
 
 </manifest>
