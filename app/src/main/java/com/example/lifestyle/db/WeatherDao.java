@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.*;
 
 import java.util.List;
+
 @Dao
 public interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

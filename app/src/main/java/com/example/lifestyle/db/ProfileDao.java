@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.*;
 import java.util.List;
+
 @Dao
 public interface ProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -16,5 +17,5 @@ public interface ProfileDao {
     void deleteAll();
 
     @Query("SELECT * from profile_table ORDER BY username ASC")
-    LiveData<List<WeatherTable>> getAll();
+    LiveData<List<ProfileTable>> getAll();
 }

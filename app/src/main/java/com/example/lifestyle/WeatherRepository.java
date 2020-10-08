@@ -9,8 +9,7 @@ import com.example.lifestyle.data.WeatherData;
 import com.example.lifestyle.db.WeatherDao;
 import com.example.lifestyle.db.WeatherRoomDatabase;
 import com.example.lifestyle.db.WeatherTable;
-import com.example.lifestyle.utils.JSONWeatherUtils;
-import com.example.lifestyle.utils.NetworkUtils;
+import com.example.lifestyle.utils.WeatherUtils;
 
 import org.json.JSONException;
 
@@ -20,23 +19,24 @@ import java.net.URL;
 
 public class WeatherRepository {
     private final MutableLiveData<WeatherData> jsonData = new MutableLiveData<WeatherData>();
-    private String mLocation;
+    private double mLatitude, mLongitude;
     private String mJsonString;
     private WeatherDao mWeatherDao;
 
     WeatherRepository(Application application){
         WeatherRoomDatabase db = WeatherRoomDatabase.getDatabase(application);
         mWeatherDao = db.weatherDao();
-        loadData();
+//        loadData();
     }
 
-    public void setLocation(String location){
-        mLocation = location;
+    public void setLocation(double latitude, double longitude){
+        mLatitude = latitude;
+        mLongitude = longitude;
         loadData();
     }
 
     private void insert(){
-        WeatherTable weatherTable = new WeatherTable(mLocation,mJsonString);
+        WeatherTable weatherTable = new WeatherTable(mLatitude, mLongitude, mJsonString);
         new insertAsyncTask(mWeatherDao).execute(weatherTable);
     }
 
@@ -46,10 +46,10 @@ public class WeatherRepository {
 
     private void loadData()
     {
-        new fetchWeatherAsyncTask(this).execute(mLocation);
+        new fetchWeatherAsyncTask(this).execute(mLatitude, mLongitude);
     }
 
-    private static class fetchWeatherAsyncTask extends AsyncTask<String,Void,String> {
+    private static class fetchWeatherAsyncTask extends AsyncTask<Double,Void,String> {
         private WeakReference<WeatherRepository> mRepoWReference;
 
         fetchWeatherAsyncTask(WeatherRepository repo)
@@ -57,18 +57,19 @@ public class WeatherRepository {
             mRepoWReference = new WeakReference<WeatherRepository>(repo);
         }
         @Override
-        protected String doInBackground(String... strings) {
-            String location = strings[0];
-            URL weatherDataURL = null;
+        protected String doInBackground(Double... coordinates) {
+            double latitude = coordinates[0];
+            double longitude = coordinates[1];
+
+            URL weatherDataURL = WeatherUtils.buildURLFromString(latitude, longitude);
+
             String retrievedJsonData = null;
-            if(location!=null) {
-                weatherDataURL = NetworkUtils.buildURLFromString(location);
-                try {
-                    retrievedJsonData = NetworkUtils.getDataFromURL(weatherDataURL);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                retrievedJsonData = WeatherUtils.getDataFromURL(weatherDataURL);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
             return retrievedJsonData;
         }
 
@@ -79,7 +80,7 @@ public class WeatherRepository {
                 localWRvar.mJsonString = returnedJson;
                 localWRvar.insert();
                 try {
-                    localWRvar.jsonData.setValue(JSONWeatherUtils.getWeatherData(returnedJson));
+                    localWRvar.jsonData.setValue(WeatherUtils.getWeatherData(returnedJson));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
