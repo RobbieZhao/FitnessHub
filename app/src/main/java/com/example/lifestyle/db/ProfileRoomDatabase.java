@@ -11,8 +11,12 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 @Database(entities = {ProfileTable.class}, version = 1, exportSchema = false)
 
 public abstract class ProfileRoomDatabase extends RoomDatabase{
+
     private static volatile ProfileRoomDatabase mInstance;
-    public abstract ProfileDao profileDao();
+
+    public static ProfileDao profileDao() {
+        return null;
+    }
 
     public static synchronized ProfileRoomDatabase getDatabase(final Context context){
         if(mInstance==null) {
@@ -37,10 +41,11 @@ public abstract class ProfileRoomDatabase extends RoomDatabase{
             mDao = db.profileDao();
         }
 
+        //need to complete
         @Override
         protected Void doInBackground(Void... voids) {
-            mDao.deleteAll();
-            ProfileTable profiletable = new ProfileTable("dummy_loc","dummy_data");
+            //mDao.deleteAll();
+            ProfileTable profiletable = new ProfileTable("name","profile_data");
             mDao.insert(profiletable);
             return null;
         }

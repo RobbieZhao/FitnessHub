@@ -13,6 +13,12 @@ public interface ProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(ProfileTable profileTable);
 
+    @Update
+    void update(ProfileTable profileTable);
+
+    @Delete
+    void delete(ProfileTable profileTable);
+
     @Query("DELETE FROM profile_table")
     void deleteAll();
 

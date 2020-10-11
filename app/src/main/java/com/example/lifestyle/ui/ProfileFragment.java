@@ -18,8 +18,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.example.lifestyle.ProfileViewModel;
 import com.example.lifestyle.R;
+import com.example.lifestyle.data.ProfileData;
+import com.example.lifestyle.utils.JSONProfileUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,11 +39,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     protected RadioGroup mRgSex;
     protected Button mButtonSubmit;
 
-    protected HashMap<String, String> ProfileData;
+    protected HashMap<String, String> profileData;
 
     private String MODE;
-    private Activity activity;
+    private Activity mActivity;
     protected String directory;
+
+    private ProfileViewModel mProfileViewModel;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -58,14 +68,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mEtWeight = getView().findViewById(R.id.EditTextWeight);
         mButtonSubmit = getView().findViewById(R.id.SubmitButtonUsers);
 
-        activity = getActivity();
-        directory = activity.getFilesDir().getAbsolutePath();
+        mActivity = getActivity();
+        //directory = activity.getFilesDir().getAbsolutePath();
 
         MODE = getArguments().getString("MODE");
         if (MODE.equals("NEW_USER")) {
-            ProfileData = new HashMap<>();
+            profileData = new HashMap<>();
         } else {
-            ProfileData = Utils.readData(directory, Utils.data_file);
+            //here is the problem
+            String info = profileData.get(mEtUsername);
             displayData();
             disableInputs();
             mButtonSubmit.setText("Edit");
@@ -74,6 +85,38 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mIvProfile.setOnClickListener(this);
         mButtonSubmit.setOnClickListener(this);
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //Create the view model
+        mProfileViewModel = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
+
+        //Set the observer
+        mProfileViewModel.getData().observeForever(nameObserver);
+
+        //Pass activity
+        mActivity = getActivity();
+        //mWeatherViewModel.setActivity(mActivity);
+
+    }
+
+    //create an observer that watches the LiveData<profilerData> object
+    final Observer<ProfileData> nameObserver = new Observer<ProfileData>() {
+        @Override
+        public void onChanged(@Nullable final ProfileData profileData) {
+            if(profileData != null){
+                mEtUsername.setText(profileData.getUsername());
+                mEtAge.setText(profileData.getAge());
+                mEtCity.setText(profileData.getCity());
+                mEtCountry.setText(profileData.getCountry());
+                mEtCity.setText(profileData.getCity());
+                mEtFoot.setText(profileData.getFoot());
+                mEtInch.setText(profileData.getInch());
+                mEtWeight.setText(profileData.getWeight());
+            }
+        }
+    };
 
     @Override
     public void onClick(View view) {
@@ -91,11 +134,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
     private void handleButtonClick() {
         if (MODE.equals("NEW_USER")) {
             try {
-                saveInputs();
 
+                mProfileViewModel.getData();
+                saveInputs();
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 startActivity(intent);
             } catch (Exception e) {
@@ -104,7 +149,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         } else if (MODE.equals("EDIT")) {
             try {
                 saveInputs();
-
+                mProfileViewModel.getData();
                 disableInputs();
                 mButtonSubmit.setText("Edit");
             } catch (Exception e) {
@@ -121,7 +166,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     protected void startCamera() {
         //The ImageView should open a camera
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(cameraIntent.resolveActivity(activity.getPackageManager())!=null){
+        if(cameraIntent.resolveActivity(mActivity.getPackageManager())!=null){
             startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
@@ -129,7 +174,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == activity.RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == mActivity.RESULT_OK) {
 
             //Get the bitmap
             Bundle extras = data.getExtras();
@@ -140,11 +185,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             //Open a file and write to it
             if(Utils.isExternalStorageWritable()){
                 if (Utils.saveImage(photo, directory, Utils.image_file)) {
-                    Toast.makeText(activity, "Image saved!", Toast.LENGTH_SHORT).show();
-                    ProfileData.put("image", "true");
+                    Toast.makeText(mActivity, "Image saved!", Toast.LENGTH_SHORT).show();
+                    profileData.put("image", "true");
                 }
             } else {
-                Toast.makeText(activity,"External storage not writable.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity,"External storage not writable.",Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -157,8 +202,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         collectHeight();
         collectWeight();
 
-        if (!Utils.storeData(ProfileData, directory, Utils.data_file))
-            throw new Exception("File not saved");
+//        if (!Utils.storeData(profileData, directory, Utils.data_file))
+////            throw new Exception("File not saved");
+        String to_save = profileData.get(mEtUsername);
+        ProfileData pd = JSONProfileUtils.getprofiledata(to_save);
+        JSONProfileUtils.storeProfileJSON(pd);
     }
 
     protected void enableInputs() {
@@ -169,9 +217,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         Utils.enableRadioGroup(mRgSex);
     }
 
-    protected void displayData() {
+        protected void displayData() {
         //Set the ImageView
-        if (ProfileData.containsKey("image")) {
+        if (profileData.containsKey("image")) {
             Bitmap thumbnailImage = BitmapFactory.decodeFile(directory + "/" + Utils.image_file);
             if (thumbnailImage != null) {
                 mIvProfile.setImageBitmap(thumbnailImage);
@@ -188,8 +236,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         readFromMap(mEtWeight, "weight");
 
         // Set RadioGroup
-        if (ProfileData.containsKey("sex")) {
-            String sex = ProfileData.get("sex");
+        if (profileData.containsKey("sex")) {
+            String sex = profileData.get("sex");
             if (sex.equals("male")) {
                 mRgSex.check(R.id.Male);
             } else if (sex.equals("female")) {
@@ -207,24 +255,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void readFromMap(EditText editText, String key) {
-        if (ProfileData.containsKey(key))
-            editText.setText(ProfileData.get(key));
+        if (profileData.containsKey(key))
+            editText.setText(profileData.get(key));
     }
-
+//
     private void collectUsername() throws Exception {
         String username = mEtUsername.getText().toString().trim();
         if (username.length() == 0) {
-            Toast.makeText(activity,"Username is required!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity,"Username is required!",Toast.LENGTH_SHORT).show();
             throw new Exception("Empty username!");
         }
-        ProfileData.put("username", username);
+        profileData.put("username", username);
     }
 
     private void collectAge() {
         int age = Utils.getIntegerInput(mEtAge);
 
         if (age > 0)
-            ProfileData.put("age", Integer.toString(age));
+            profileData.put("age", Integer.toString(age));
     }
 
     private void collectSex() {
@@ -233,20 +281,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         // If those two conditions are false, that means
         // the RadioGroup is not selected.
         if (selectedID == R.id.Male) {
-            ProfileData.put("sex", "male");
+            profileData.put("sex", "male");
         } else if (selectedID == R.id.Female) {
-            ProfileData.put("sex", "female");
+            profileData.put("sex", "female");
         }
     }
 
     private void collectLocation() {
         String country = mEtCountry.getText().toString().trim();
         if (!country.isEmpty())
-            ProfileData.put("country", country);
+            profileData.put("country", country);
 
         String city = mEtCity.getText().toString().trim();
         if (!city.isEmpty())
-            ProfileData.put("city", city);
+            profileData.put("city", city);
     }
 
     private void collectHeight() throws Exception {
@@ -255,13 +303,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         String[] messages = Utils.checkHeightInput(foot, inch, false);
         if (!messages[0].isEmpty() && !messages[1].isEmpty()) {
-            Toast.makeText(activity, messages[0], Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, messages[0], Toast.LENGTH_SHORT).show();
             throw new Exception(messages[1]);
         }
 
         if (foot != -1 && inch != -1) {
-            ProfileData.put("foot", Integer.toString(foot));
-            ProfileData.put("inch", Integer.toString(inch));
+            profileData.put("foot", Integer.toString(foot));
+            profileData.put("inch", Integer.toString(inch));
         }
     }
 
@@ -269,11 +317,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         double weight = Utils.getDoubleInput(mEtWeight);
 
         if (weight == 0) {
-            Toast.makeText(activity,"Weight can't be 0!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity,"Weight can't be 0!",Toast.LENGTH_SHORT).show();
             throw new Exception("Invalid weight");
         }
 
         if (weight > 0)
-            ProfileData.put("weight", Double.toString(weight));
+            profileData.put("weight", Double.toString(weight));
     }
 }
