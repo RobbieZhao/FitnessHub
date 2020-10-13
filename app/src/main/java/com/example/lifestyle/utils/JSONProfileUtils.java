@@ -7,11 +7,12 @@ import org.json.JSONObject;
 
 public class JSONProfileUtils {
 
-    public static ProfileData getprofiledata(String data) throws JSONException {
+    public static ProfileData getProfileData(String data) throws JSONException {
 
         ProfileData profiledata = new ProfileData();
         //Start parsing JSON data
         JSONObject jsonObject = new JSONObject(data); //Must throw JSONException
+
         profiledata.setAge(jsonObject.getInt("age"));
         profiledata.setCity(jsonObject.getString("city"));
         profiledata.setCountry(jsonObject.getString("country"));
@@ -19,6 +20,7 @@ public class JSONProfileUtils {
         profiledata.setInch(jsonObject.getInt("inch"));
         profiledata.setWeight(jsonObject.getInt("weight"));
         profiledata.setUsername(jsonObject.getString("username"));
+        profiledata.setSex(jsonObject.getString("sex"));
 
         return profiledata;
     }
@@ -33,6 +35,7 @@ public class JSONProfileUtils {
         jsonObject.put("weight", profileData.getWeight()+"");
         jsonObject.put("foot", profileData.getFoot()+"");
         jsonObject.put("inch",profileData.getInch()+"");
+        jsonObject.put("sex", profileData.getSex());
 
         return jsonObject.toString();
 

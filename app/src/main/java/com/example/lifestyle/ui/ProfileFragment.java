@@ -3,7 +3,6 @@ package com.example.lifestyle.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -26,20 +25,14 @@ import com.example.lifestyle.R;
 import com.example.lifestyle.data.ProfileData;
 import com.example.lifestyle.utils.JSONProfileUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
     protected ImageView mIvProfile;
     protected EditText mEtUsername, mEtAge, mEtCountry, mEtCity, mEtFoot, mEtInch, mEtWeight;
     protected RadioGroup mRgSex;
     protected Button mButtonSubmit;
-
-    protected HashMap<String, String> profileData;
 
     private String MODE;
     private Activity mActivity;
@@ -69,36 +62,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mButtonSubmit = getView().findViewById(R.id.SubmitButtonUsers);
 
         mActivity = getActivity();
-        //directory = activity.getFilesDir().getAbsolutePath();
+
+        //Create the view model
+        mProfileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+
+        //Set the observer
+        (mProfileViewModel.getData()).observe(getViewLifecycleOwner(), nameObserver);
 
         MODE = getArguments().getString("MODE");
         if (MODE.equals("NEW_USER")) {
-            profileData = new HashMap<>();
+
         } else {
-            //here is the problem
-            String info = profileData.get(mEtUsername);
-            displayData();
-            disableInputs();
+            mProfileViewModel.fetchUserData();
             mButtonSubmit.setText("Edit");
         }
 
         mIvProfile.setOnClickListener(this);
         mButtonSubmit.setOnClickListener(this);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //Create the view model
-        mProfileViewModel = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
-
-        //Set the observer
-        mProfileViewModel.getData().observeForever(nameObserver);
-
-        //Pass activity
-        mActivity = getActivity();
-        //mWeatherViewModel.setActivity(mActivity);
-
     }
 
     //create an observer that watches the LiveData<profilerData> object
@@ -107,13 +87,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         public void onChanged(@Nullable final ProfileData profileData) {
             if(profileData != null){
                 mEtUsername.setText(profileData.getUsername());
-                mEtAge.setText(profileData.getAge());
-                mEtCity.setText(profileData.getCity());
+                if (profileData.getAge() >= 0)
+                    mEtAge.setText(String.valueOf(profileData.getAge()));
                 mEtCountry.setText(profileData.getCountry());
                 mEtCity.setText(profileData.getCity());
-                mEtFoot.setText(profileData.getFoot());
-                mEtInch.setText(profileData.getInch());
-                mEtWeight.setText(profileData.getWeight());
+                if (profileData.getFoot() >= 0)
+                    mEtFoot.setText(String.valueOf(profileData.getFoot()));
+                if (profileData.getInch() >= 0)
+                    mEtInch.setText(String.valueOf(profileData.getInch()));
+                if (profileData.getWeight() >= 0)
+                    mEtWeight.setText(String.valueOf(profileData.getWeight()));
+
+                String sex = profileData.getSex();
+                if (sex.equals("male")) {
+                    mRgSex.check(R.id.Male);
+                } else if (sex.equals("female")) {
+                    mRgSex.check(R.id.Female);
+                }
+                disableInputs();
             }
         }
     };
@@ -139,7 +130,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (MODE.equals("NEW_USER")) {
             try {
 
-                mProfileViewModel.getData();
                 saveInputs();
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 startActivity(intent);
@@ -152,6 +142,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 mProfileViewModel.getData();
                 disableInputs();
                 mButtonSubmit.setText("Edit");
+                MODE = "VIEW";
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -163,12 +154,98 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    protected void startCamera() {
-        //The ImageView should open a camera
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(cameraIntent.resolveActivity(mActivity.getPackageManager())!=null){
-            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+    protected void saveInputs() throws Exception {
+        String username = getUsername();
+        int age = getAge();
+        String sex = getSex();
+        String country = getCountry();
+        String city = getCity();
+        int foot = getFoot();
+        int inch = getInch();
+        double weight = getWeight();
+
+        ProfileData profileData = new ProfileData();
+        profileData.setUsername(username);
+        profileData.setAge(age);
+        profileData.setSex(sex);
+        profileData.setCountry(country);
+        profileData.setCity(city);
+        profileData.setFoot(foot);
+        profileData.setInch(inch);
+        profileData.setWeight(weight);
+
+        mProfileViewModel.storeUserData(JSONProfileUtils.storeProfileJSON(profileData));
+    }
+    private String getUsername() throws Exception {
+        String username = mEtUsername.getText().toString().trim();
+        
+        if (username.length() == 0) {
+            Toast.makeText(mActivity,"Username is required!",Toast.LENGTH_SHORT).show();
+            throw new Exception("Empty username!");
         }
+
+        return username;
+    }
+
+    private int getAge() {
+        return Utils.getIntegerInput(mEtAge);
+    }
+
+    private String getSex() {
+        int selectedID = mRgSex.getCheckedRadioButtonId();
+
+        // If those two conditions are false, that means
+        // the RadioGroup is not selected.
+        if (selectedID == R.id.Male) {
+            return "male";
+        } else if (selectedID == R.id.Female) {
+            return "female";
+        } else {
+            return "null";
+        }
+    }
+
+    private String getCountry() {
+        return mEtCountry.getText().toString().trim();
+    }
+
+    private String getCity() {
+        return mEtCity.getText().toString().trim();
+    }
+
+    private int getFoot() {
+        return Utils.getIntegerInput(mEtFoot);
+    }
+
+    private int getInch() {
+        return Utils.getIntegerInput(mEtInch);
+    }
+
+    private double getWeight() throws Exception {
+        double weight = Utils.getDoubleInput(mEtWeight);
+
+        if (weight == 0) {
+            Toast.makeText(mActivity,"Weight can't be 0!",Toast.LENGTH_SHORT).show();
+            throw new Exception("Invalid weight");
+        }
+
+        return weight;
+    }
+
+    protected void enableInputs() {
+        ArrayList<EditText> editTexts = new ArrayList(
+                Arrays.asList(mEtUsername, mEtAge, mEtCountry, mEtCity, mEtFoot, mEtInch, mEtWeight));
+        Utils.enableEditText(editTexts);
+
+        Utils.enableRadioGroup(mRgSex);
+    }
+
+    protected void disableInputs() {
+        ArrayList<EditText> editTexts = new ArrayList(
+                Arrays.asList(mEtUsername, mEtAge, mEtCountry, mEtCity, mEtFoot, mEtInch, mEtWeight));
+        Utils.disableEditText(editTexts);
+
+        Utils.disableRadioGroup(mRgSex);
     }
 
     @Override
@@ -186,7 +263,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             if(Utils.isExternalStorageWritable()){
                 if (Utils.saveImage(photo, directory, Utils.image_file)) {
                     Toast.makeText(mActivity, "Image saved!", Toast.LENGTH_SHORT).show();
-                    profileData.put("image", "true");
                 }
             } else {
                 Toast.makeText(mActivity,"External storage not writable.",Toast.LENGTH_SHORT).show();
@@ -194,134 +270,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    protected void saveInputs() throws Exception {
-        collectUsername();
-        collectAge();
-        collectSex();
-        collectLocation();
-        collectHeight();
-        collectWeight();
-
-//        if (!Utils.storeData(profileData, directory, Utils.data_file))
-////            throw new Exception("File not saved");
-        String to_save = profileData.get(mEtUsername);
-        ProfileData pd = JSONProfileUtils.getprofiledata(to_save);
-        JSONProfileUtils.storeProfileJSON(pd);
-    }
-
-    protected void enableInputs() {
-        ArrayList<EditText> editTexts = new ArrayList(
-                Arrays.asList(mEtUsername, mEtAge, mEtCountry, mEtCity, mEtFoot, mEtInch, mEtWeight));
-        Utils.enableEditText(editTexts);
-
-        Utils.enableRadioGroup(mRgSex);
-    }
-
-        protected void displayData() {
-        //Set the ImageView
-        if (profileData.containsKey("image")) {
-            Bitmap thumbnailImage = BitmapFactory.decodeFile(directory + "/" + Utils.image_file);
-            if (thumbnailImage != null) {
-                mIvProfile.setImageBitmap(thumbnailImage);
-            }
+    protected void startCamera() {
+        //The ImageView should open a camera
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(cameraIntent.resolveActivity(mActivity.getPackageManager())!=null){
+            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
         }
-
-        // Set EditTexts
-        readFromMap(mEtUsername, "username");
-        readFromMap(mEtAge, "age");
-        readFromMap(mEtCountry, "country");
-        readFromMap(mEtCity, "city");
-        readFromMap(mEtFoot, "foot");
-        readFromMap(mEtInch, "inch");
-        readFromMap(mEtWeight, "weight");
-
-        // Set RadioGroup
-        if (profileData.containsKey("sex")) {
-            String sex = profileData.get("sex");
-            if (sex.equals("male")) {
-                mRgSex.check(R.id.Male);
-            } else if (sex.equals("female")) {
-                mRgSex.check(R.id.Female);
-            }
-        }
-    }
-
-    protected void disableInputs() {
-        ArrayList<EditText> editTexts = new ArrayList(
-                Arrays.asList(mEtUsername, mEtAge, mEtCountry, mEtCity, mEtFoot, mEtInch, mEtWeight));
-        Utils.disableEditText(editTexts);
-
-        Utils.disableRadioGroup(mRgSex);
-    }
-
-    private void readFromMap(EditText editText, String key) {
-        if (profileData.containsKey(key))
-            editText.setText(profileData.get(key));
-    }
-//
-    private void collectUsername() throws Exception {
-        String username = mEtUsername.getText().toString().trim();
-        if (username.length() == 0) {
-            Toast.makeText(mActivity,"Username is required!",Toast.LENGTH_SHORT).show();
-            throw new Exception("Empty username!");
-        }
-        profileData.put("username", username);
-    }
-
-    private void collectAge() {
-        int age = Utils.getIntegerInput(mEtAge);
-
-        if (age > 0)
-            profileData.put("age", Integer.toString(age));
-    }
-
-    private void collectSex() {
-        int selectedID = mRgSex.getCheckedRadioButtonId();
-
-        // If those two conditions are false, that means
-        // the RadioGroup is not selected.
-        if (selectedID == R.id.Male) {
-            profileData.put("sex", "male");
-        } else if (selectedID == R.id.Female) {
-            profileData.put("sex", "female");
-        }
-    }
-
-    private void collectLocation() {
-        String country = mEtCountry.getText().toString().trim();
-        if (!country.isEmpty())
-            profileData.put("country", country);
-
-        String city = mEtCity.getText().toString().trim();
-        if (!city.isEmpty())
-            profileData.put("city", city);
-    }
-
-    private void collectHeight() throws Exception {
-        int foot = Utils.getIntegerInput(mEtFoot);
-        int inch = Utils.getIntegerInput(mEtInch);
-
-        String[] messages = Utils.checkHeightInput(foot, inch, false);
-        if (!messages[0].isEmpty() && !messages[1].isEmpty()) {
-            Toast.makeText(mActivity, messages[0], Toast.LENGTH_SHORT).show();
-            throw new Exception(messages[1]);
-        }
-
-        if (foot != -1 && inch != -1) {
-            profileData.put("foot", Integer.toString(foot));
-            profileData.put("inch", Integer.toString(inch));
-        }
-    }
-
-    private void collectWeight() throws Exception {
-        double weight = Utils.getDoubleInput(mEtWeight);
-
-        if (weight == 0) {
-            Toast.makeText(mActivity,"Weight can't be 0!",Toast.LENGTH_SHORT).show();
-            throw new Exception("Invalid weight");
-        }
-
-        if (weight > 0)
-            profileData.put("weight", Double.toString(weight));
     }
 }

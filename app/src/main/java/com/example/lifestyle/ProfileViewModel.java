@@ -20,9 +20,14 @@ public class ProfileViewModel extends AndroidViewModel {
         jsonData = mProfileRepository.getData();
     }
 
-    public void setUser(String userName, String user){
-        mProfileRepository.setUser(userName, user);
+    public LiveData<ProfileData> getData(){return jsonData;}
+
+
+    public void storeUserData(String profileData) {
+        mProfileRepository.storeUserData(profileData);
     }
 
-    public LiveData<ProfileData> getData(){return jsonData;}
+    public void fetchUserData() {
+        mProfileRepository.fetchUserData();
+    }
 }

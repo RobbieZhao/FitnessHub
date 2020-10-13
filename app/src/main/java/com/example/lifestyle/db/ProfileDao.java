@@ -13,15 +13,9 @@ public interface ProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(ProfileTable profileTable);
 
-    @Update
-    void update(ProfileTable profileTable);
-
-    @Delete
-    void delete(ProfileTable profileTable);
-
     @Query("DELETE FROM profile_table")
     void deleteAll();
 
-    @Query("SELECT * from profile_table ORDER BY username ASC")
-    LiveData<List<ProfileTable>> getAll();
+    @Query("SELECT * from profile_table WHERE uID=:id")
+    ProfileTable getData(String id);
 }

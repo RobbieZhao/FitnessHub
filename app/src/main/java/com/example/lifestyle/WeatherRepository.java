@@ -26,7 +26,6 @@ public class WeatherRepository {
     WeatherRepository(Application application){
         WeatherRoomDatabase db = WeatherRoomDatabase.getDatabase(application);
         mWeatherDao = db.weatherDao();
-//        loadData();
     }
 
     public void setLocation(double latitude, double longitude){
