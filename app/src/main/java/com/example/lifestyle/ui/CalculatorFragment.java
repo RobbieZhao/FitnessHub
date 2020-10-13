@@ -14,9 +14,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.lifestyle.ProfileViewModel;
 import com.example.lifestyle.R;
+import com.example.lifestyle.data.ProfileData;
 
 import java.util.HashMap;
 
@@ -26,16 +29,14 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     private Button mButtonCalculator;
     private TextView mTvBMR, mTvBMI, mTvCalories, mTvWarning;
     private RadioGroup mRgStatus, mRgGoal;
-    private HashMap<String, String> ProfileData;
-    private String directory;
     private Activity activity;
+    private ProfileData mProfileData;
 
-    private ProfileViewModel mprofileviewmodel;
+    private ProfileViewModel mProfileViewModel;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        System.out.print("we are here");
         return inflater.inflate(R.layout.activity_calculator,container,false);
     }
 
@@ -76,10 +77,32 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         });
 
         activity = getActivity();
-        directory = activity.getFilesDir().getAbsolutePath();
 
-        displayData();
+        //Create the view model
+        mProfileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+
+        //Set the observer
+        (mProfileViewModel.getData()).observe(getViewLifecycleOwner(), nameObserver);
+
+        mProfileViewModel.fetchUserData();
+
     }
+
+    //create an observer that watches the LiveData<profilerData> object
+    final Observer<com.example.lifestyle.data.ProfileData> nameObserver = new Observer<ProfileData>() {
+        @Override
+        public void onChanged(@Nullable final ProfileData profileData) {
+            if(profileData != null){
+                mProfileData = profileData;
+                if (profileData.getFoot() >= 0)
+                    mEtFoot.setText(String.valueOf(profileData.getFoot()));
+                if (profileData.getInch() >= 0)
+                    mEtInch.setText(String.valueOf(profileData.getInch()));
+                if (profileData.getWeight() >= 0)
+                    mEtWeight.setText(String.valueOf(profileData.getWeight()));
+            }
+        }
+    };
 
     @Override
     public void onClick(View view) {
@@ -87,37 +110,6 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
             case R.id.GetMyPlanButton: {
                 generatePlan();
             }
-        }
-    }
-
-    private void displayData() {
-        ProfileData = Utils.readData(directory, Utils.data_file);
-
-        if (ProfileData.containsKey("foot"))
-            mEtFoot.setText(ProfileData.get("foot"));
-        if (ProfileData.containsKey("inch"))
-            mEtInch.setText(ProfileData.get("inch"));
-        if (ProfileData.containsKey("weight"))
-            mEtWeight.setText(ProfileData.get("weight"));
-        if (ProfileData.containsKey("status")) {
-            if (ProfileData.get("status").equals("active"))
-                mRgStatus.check(R.id.Active);
-            else mRgStatus.check(R.id.Sedentary);
-        }
-        if (ProfileData.containsKey("goal")) {
-            double goal = Double.parseDouble(ProfileData.get("goal"));
-            if (goal < 0) {
-                mRgGoal.check(R.id.loseWeight);
-                mEtLoseWeight.setText(Double.toString(-goal));
-            } else if (goal > 0) {
-                mRgGoal.check(R.id.gainWeight);
-                mEtGainWeight.setText(Double.toString(goal));
-            } else {
-                mRgGoal.check(R.id.maintainWeight);
-            }
-        } else {
-            Utils.disableEditText(mEtGainWeight);
-            Utils.disableEditText(mEtLoseWeight);
         }
     }
 
@@ -145,17 +137,6 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
             if ((dailyCalorie < 1200 && isMale) || (dailyCalorie < 1000 && !isMale))
                 warning += "You are not eating enough each day!";
             mTvWarning.setText(warning);
-
-            ProfileData.put("foot", Integer.toString(height[0]));
-            ProfileData.put("inch", Integer.toString(height[1]));
-            ProfileData.put("weight", Double.toString(weight));
-            if (status)
-                ProfileData.put("status", "active");
-            else
-                ProfileData.put("status", "sedentary");
-            ProfileData.put("goal", Double.toString(goal));
-
-            Utils.storeData(ProfileData, directory, Utils.data_file);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -175,13 +156,14 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     }
 
     private int getAge() throws Exception {
-        if (!ProfileData.containsKey("age")) {
+        int age = mProfileData.getAge();
+        if (age == -1) {
             Toast.makeText(activity, "Fill out age in the profile!", Toast.LENGTH_SHORT).show();
             throw new Exception("Unknown age");
         }
 
         // Age is already sanitized in the Profile page
-        return Integer.parseInt(ProfileData.get("age"));
+        return mProfileData.getAge();
     }
 
     private double getWeight() throws Exception {
@@ -199,12 +181,12 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     }
 
     private boolean isMale() throws Exception {
-        if (!ProfileData.containsKey("sex")) {
+        if (mProfileData.getSex().equals("null")) {
             Toast.makeText(activity, "Fill out sex in the profile!", Toast.LENGTH_SHORT).show();
             throw new Exception("Unknown sex");
         }
 
-        String sex = ProfileData.get("sex");
+        String sex = mProfileData.getSex();
 
         return sex.equals("male");
     }
