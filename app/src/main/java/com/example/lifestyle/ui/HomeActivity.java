@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button mButtonCalculator, mButtonWeather, mButtonMap, mButtonProfile;
+    private Button mButtonCalculator, mButtonWeather, mButtonMap, mButtonProfile, mButtonStep;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private double latitude, longitude;
 
@@ -52,11 +52,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             mButtonWeather = findViewById(R.id.WeatherButton);
             mButtonMap = findViewById(R.id.MapButton);
             mButtonProfile = findViewById(R.id.ProfileButton);
+            mButtonStep = findViewById(R.id.StepButton);
 
             mButtonCalculator.setOnClickListener(this);
             mButtonWeather.setOnClickListener(this);
             mButtonMap.setOnClickListener(this);
             mButtonProfile.setOnClickListener(this);
+            mButtonStep.setOnClickListener(this);
         }
     }
 
@@ -112,6 +114,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.ProfileButton: {
                 openProfile();
+            }
+
+            case R.id.StepButton: {
+                openStep();
             }
         }
     }
@@ -173,6 +179,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
             HomeActivity.this.startActivity(profileIntent);
+        }
+    }
+
+    public void openStep() {
+        if (isTablet()) {
+            FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+            fTrans.replace(R.id.tablet_right, new StepFragment(),"step");
+            fTrans.commit();
+        } else {
+            Intent stepIntent = new Intent(HomeActivity.this, StepActivity.class);
+            HomeActivity.this.startActivity(stepIntent);
         }
     }
 }

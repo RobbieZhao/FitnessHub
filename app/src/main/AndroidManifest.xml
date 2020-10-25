@@ -37,6 +37,9 @@
         <activity
             android:name=".ui.WeatherActivity"
             android:parentActivityName=".ui.HomeActivity" />
+        <activity
+            android:name=".ui.StepActivity"
+            android:parentActivityName=".ui.HomeActivity" />
     </application>
 
 </manifest>

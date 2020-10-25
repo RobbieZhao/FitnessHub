@@ -4,4 +4,6 @@
     <string name="weather_module_name">Weather</string>
     <string name="map_module_name">Hikes Near Me</string>
     <string name="profile_module_name">My Profile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
