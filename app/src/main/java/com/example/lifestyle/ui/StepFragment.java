@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,17 @@ import com.example.lifestyle.R;
 
 public class StepFragment extends Fragment {
     private SensorManager mSensorManager;
-    private Sensor mStepCounter;
+    private Sensor mAccelerometer;
+    private Sensor mStepDetector;
     public TextView mTvData;
-    private final double mThreshold = 0.2;
+    private final double mThreshold = 20;
+
+    private long currentTime;
+    private long lastUpdateTime;
+
+    private boolean isStepDetectorEnabled;
+
+    private int mSteps;
 
     //Previous accelerations
     private double last_x, last_y, last_z;
@@ -29,11 +38,6 @@ public class StepFragment extends Fragment {
     //current accelerations
     private double now_x, now_y,now_z;
     private boolean mNotFirstTime;
-
-    private long firstUpdateTime;
-    private boolean mNotSecondTime;
-    private final double UPTATE_INTERVAL_TIME = 1000;
-    private double third_x, third_y, third_z;
 
 
     @Nullable
@@ -48,75 +52,67 @@ public class StepFragment extends Fragment {
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
 
         //Get the default StepCounter sensor
-        mStepCounter = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mStepDetector = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
         //Get the text view
         mTvData = getView().findViewById(R.id.tv_sensordata);
+
+        mSteps = 0;
+
+        isStepDetectorEnabled = false;
+        lastUpdateTime = System.currentTimeMillis();
     }
 
-    private SensorEventListener mListener = new SensorEventListener() {
-
-
+    private SensorEventListener mStepDetectorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
+            mSteps += 1;
+            mTvData.setText(String.valueOf(mSteps));
+        }
 
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int i) {
+        }
+    };
+
+    private SensorEventListener mAccelerometerListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
             //Get the acceleration rates along the y and z axes
-            now_x = sensorEvent.values[0];
-            now_y = sensorEvent.values[1];
-            now_z = sensorEvent.values[2];
+            now_x = event.values[0];
+            now_y = event.values[1];
+            now_z = event.values[2];
 
-            if (mNotFirstTime) {
+            currentTime = System.currentTimeMillis();
+            if (currentTime - lastUpdateTime >= 1000) {
                 double dx = Math.abs(last_x - now_x);
                 double dy = Math.abs(last_y - now_y);
                 double dz = Math.abs(last_z - now_z);
 
                 //Check if the values of acceleration have changed on any pair of axes
-                if ((dx > mThreshold && dy > mThreshold) ||
-                        (dx > mThreshold && dz > mThreshold) ||
-                        (dy > mThreshold && dz > mThreshold)) {
-
-                    //start step counter and display the steps
-                    mTvData.setText("" + String.valueOf(sensorEvent.values[0]));
-
-                    firstUpdateTime = System.currentTimeMillis();
-
-                    mNotSecondTime = true;
-
-                    third_x = last_x;
-                    third_y = last_y;
-                    third_z = last_z;
-
-                    if (mNotSecondTime) {
-
-                        long currentUpdateTime = System.currentTimeMillis();
-                        long timeInterval = currentUpdateTime - firstUpdateTime;
-                        firstUpdateTime = currentUpdateTime;
-
-                        if (timeInterval < UPTATE_INTERVAL_TIME) {
-                            dx = Math.abs(third_x - now_x);
-                            dy = Math.abs(third_y - now_y);
-                            dz = Math.abs(third_z - now_z);
-
-                            if ((dx > mThreshold && dy > mThreshold) ||
-                                    (dx > mThreshold && dz > mThreshold) ||
-                                    (dy > mThreshold && dz > mThreshold)) {
-
-                                //step counter reset to 0
-                                mTvData.setText("0");
-                            }
-                        }
+                if ((dx > mThreshold && dy > mThreshold)
+                        || (dx > mThreshold && dz > mThreshold)
+                        || (dy > mThreshold && dz > mThreshold)) {
+                    lastUpdateTime = currentTime;
+                    if (isStepDetectorEnabled) {
+                        disableStepDetector();
+                        Log.d("StepDetector", "disable");
+                    }
+                    else {
+                        enableStepDetector();
+                        Log.d("StepDetector", "enable");
                     }
                 }
             }
+
             last_x = now_x;
             last_y = now_y;
             last_z = now_z;
-            mNotFirstTime = true;
         }
 
-
         @Override
-        public void onAccuracyChanged(Sensor sensor, int i) {
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
         }
     };
@@ -124,16 +120,37 @@ public class StepFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(mStepCounter!=null){
-            mSensorManager.registerListener(mListener,mStepCounter,SensorManager.SENSOR_DELAY_NORMAL);
+        if (mAccelerometer != null) {
+            mSensorManager.registerListener(mAccelerometerListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
+        if (mStepDetector != null) {
+            mSensorManager.registerListener(mStepDetectorListener, mStepDetector, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    public void enableStepDetector() {
+        if (mStepDetector != null) {
+            mSensorManager.registerListener(mStepDetectorListener, mStepDetector, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        isStepDetectorEnabled = true;
+    }
+
+    public void disableStepDetector() {
+        if (mStepDetector != null) {
+            mSensorManager.unregisterListener(mStepDetectorListener);
+        }
+        isStepDetectorEnabled = false;
+        mSteps = 0;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(mStepCounter!=null){
-            mSensorManager.unregisterListener(mListener);
+        if (mAccelerometer != null) {
+            mSensorManager.unregisterListener(mAccelerometerListener);
+        }
+        if (mStepDetector != null) {
+            mSensorManager.unregisterListener(mStepDetectorListener);
         }
     }
 }
