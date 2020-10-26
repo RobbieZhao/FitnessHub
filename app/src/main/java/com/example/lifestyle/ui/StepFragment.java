@@ -43,7 +43,7 @@ public class StepFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_sensor,container,false);
+        return inflater.inflate(R.layout.activity_step,container,false);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class StepFragment extends Fragment {
         mStepDetector = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
         //Get the text view
-        mTvData = getView().findViewById(R.id.tv_sensordata);
+        mTvData = getView().findViewById(R.id.textview_stepCounter);
 
         mSteps = 0;
 
