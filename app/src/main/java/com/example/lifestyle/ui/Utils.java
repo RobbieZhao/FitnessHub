@@ -10,7 +10,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Utils {
@@ -190,5 +192,11 @@ public class Utils {
             return BMR * 1.55 + pounds * 500;
         else
             return BMR * 1.2 + pounds * 500;
+    }
+
+    public static String toDate(long time) {
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(time);
+        return formatter.format(date);
     }
 }

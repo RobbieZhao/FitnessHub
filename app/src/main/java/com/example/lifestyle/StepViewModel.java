@@ -26,8 +26,8 @@ public class StepViewModel extends AndroidViewModel {
     public LiveData<ArrayList<StepData>> getData(){return jsonData;}
 
 
-    public void storeStepData(String profileData) throws JSONException {
-        mStepRepository.storeStepData(profileData);
+    public void storeStepData(StepData stepData) {
+        mStepRepository.storeStepData(stepData);
     }
 
     public void fetchStepData() {

@@ -21,7 +21,7 @@ import java.util.List;
 public class StepRepository {
     private final MutableLiveData<ArrayList<StepData>> jsonData = new MutableLiveData();
     private StepDao mStepDao;
-    private String mStepData;
+    private StepData mStepData;
 
     StepRepository(Application application){
         StepRoomDatabase db = StepRoomDatabase.getDatabase(application);
@@ -32,17 +32,13 @@ public class StepRepository {
         return jsonData;
     }
 
-    public void storeStepData(String stepData) throws JSONException {
+    public void storeStepData(StepData stepData) {
         mStepData = stepData;
 
-        StepData step_data = StepUtils.getStepData(stepData);
-        step_data.getStart();
-
-
         StepTable stepTable = new StepTable(
-                step_data.getStart(),
-                step_data.getEnd(),
-                step_data.getStep());
+                stepData.getStart(),
+                stepData.getEnd(),
+                stepData.getStep());
         new StepRepository.insertAsyncTask(mStepDao).execute(stepTable);
     }
 

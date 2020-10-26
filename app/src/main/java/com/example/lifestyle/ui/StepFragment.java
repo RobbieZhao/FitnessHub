@@ -15,15 +15,30 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lifestyle.ProfileViewModel;
 import com.example.lifestyle.R;
+import com.example.lifestyle.StepViewModel;
+import com.example.lifestyle.data.ProfileData;
+import com.example.lifestyle.data.StepData;
+
+import java.util.ArrayList;
 
 public class StepFragment extends Fragment {
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private Sensor mStepDetector;
-    public TextView mTvData;
-    private final double mThreshold = 20;
+
+    private TextView mTvData;
+    private TextView mTvStatus;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private StepViewModel mStepViewModel;
+    private final double mThreshold = 5;
 
     private long currentTime;
     private long lastUpdateTime;
@@ -32,12 +47,10 @@ public class StepFragment extends Fragment {
 
     private int mSteps;
 
-    //Previous accelerations
     private double last_x, last_y, last_z;
-
-    //current accelerations
     private double now_x, now_y,now_z;
-    private boolean mNotFirstTime;
+
+    private ArrayList<StepData> mStepHistoryData;
 
 
     @Nullable
@@ -57,12 +70,37 @@ public class StepFragment extends Fragment {
 
         //Get the text view
         mTvData = getView().findViewById(R.id.textview_stepCounter);
-
+        mTvStatus = getView().findViewById(R.id.textView_start);
         mSteps = 0;
 
         isStepDetectorEnabled = false;
         lastUpdateTime = System.currentTimeMillis();
+
+        //Get the recycler view
+        mRecyclerView = getView().findViewById(R.id.rv_StepHistory);
+
+        //Set the layout manager
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //Create the view model
+        mStepViewModel= ViewModelProviders.of(this).get(StepViewModel.class);
+
+        //Set the observer
+        (mStepViewModel.getData()).observe(getViewLifecycleOwner(), nameObserver);
+        mStepViewModel.fetchStepData();
     }
+
+    //create an observer that watches the LiveData<profilerData> object
+    final Observer<ArrayList<StepData>> nameObserver = new Observer<ArrayList<StepData>>() {
+
+        @Override
+        public void onChanged(ArrayList<StepData> stepData) {
+            //Set the adapter
+            mStepHistoryData = stepData;
+            mAdapter = new StepHistoryAdapter(stepData);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    };
 
     private SensorEventListener mStepDetectorListener = new SensorEventListener() {
         @Override
@@ -94,15 +132,31 @@ public class StepFragment extends Fragment {
                 if ((dx > mThreshold && dy > mThreshold)
                         || (dx > mThreshold && dz > mThreshold)
                         || (dy > mThreshold && dz > mThreshold)) {
-                    lastUpdateTime = currentTime;
                     if (isStepDetectorEnabled) {
-                        disableStepDetector();
                         Log.d("StepDetector", "disable");
+
+                        mTvData.setText("0");
+                        mTvStatus.setText("Shake to Start!");
+
+                        StepData stepData = new StepData();
+                        stepData.setStart(lastUpdateTime);
+                        stepData.setEnd(System.currentTimeMillis());
+                        stepData.setStep(mSteps);
+
+                        mStepHistoryData.add(stepData);
+                        mAdapter.notifyDataSetChanged();
+
+                        mStepViewModel.storeStepData(stepData);
+
+                        disableStepDetector();
                     }
                     else {
                         enableStepDetector();
                         Log.d("StepDetector", "enable");
+
+                        mTvStatus.setText("Keep it up babe!");
                     }
+                    lastUpdateTime = currentTime;
                 }
             }
 
