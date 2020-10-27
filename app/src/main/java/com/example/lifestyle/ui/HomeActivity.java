@@ -114,6 +114,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.ProfileButton: {
                 openProfile();
+                break;
             }
 
             case R.id.StepButton: {
