@@ -38,7 +38,7 @@ public class StepFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private StepViewModel mStepViewModel;
-    private final double mThreshold = 5;
+    private final double mThreshold = 20;
 
     private long currentTime;
     private long lastUpdateTime;

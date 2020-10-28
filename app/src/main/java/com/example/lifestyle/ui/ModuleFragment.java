@@ -14,7 +14,7 @@ import com.example.lifestyle.R;
 import com.example.lifestyle.ui.HomeActivity;
 
 public class ModuleFragment extends Fragment implements View.OnClickListener {
-    private Button mButtonCalculator, mButtonWeather, mButtonMap, mButtonProfile;
+    private Button mButtonCalculator, mButtonWeather, mButtonMap, mButtonProfile, mButtonStep;
 
     @Nullable
     @Override
@@ -28,11 +28,13 @@ public class ModuleFragment extends Fragment implements View.OnClickListener {
         mButtonWeather = getView().findViewById(R.id.weather_module);
         mButtonMap = getView().findViewById(R.id.map_module);
         mButtonProfile = getView().findViewById(R.id.profile_module);
+        mButtonStep = getView().findViewById(R.id.step_module);
 
         mButtonCalculator.setOnClickListener(this);
         mButtonWeather.setOnClickListener(this);
         mButtonMap.setOnClickListener(this);
         mButtonProfile.setOnClickListener(this);
+        mButtonStep.setOnClickListener(this);
     }
 
     @Override
@@ -55,6 +57,11 @@ public class ModuleFragment extends Fragment implements View.OnClickListener {
 
             case R.id.profile_module: {
                 ((HomeActivity) getActivity()).openProfile();
+                break;
+            }
+
+            case R.id.step_module: {
+                ((HomeActivity) getActivity()).openStep();
             }
         }
     }
