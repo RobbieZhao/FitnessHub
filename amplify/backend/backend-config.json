@@ -1,0 +1,16 @@
+{
+  "auth": {
+    "lifestyled3cab929": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "storage": {
+    "resource": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
+  }
+}

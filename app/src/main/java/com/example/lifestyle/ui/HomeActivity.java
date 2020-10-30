@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -13,9 +14,14 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 import com.example.lifestyle.R;
 import com.example.lifestyle.WeatherViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -23,6 +29,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,6 +50,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         updateLocation();
+
+        try {
+            // Add these lines to add the AWSCognitoAuthPlugin and AWSS3StoragePlugin plugins
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
+            Amplify.addPlugin(new AWSS3StoragePlugin());
+            Amplify.configure(getApplicationContext());
+
+            try {
+                uploadDatabases();
+            } catch (Exception e) {
+                Log.i("FileUpload", "Could not upload files");
+            }
+
+            Log.i("MyAmplifyApp", "Initialized Amplify");
+        } catch (AmplifyException error) {
+            Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
+        }
 
         if (isTablet()) {
             ModuleFragment moduleFragment = new ModuleFragment();
@@ -192,5 +218,31 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             Intent stepIntent = new Intent(HomeActivity.this, StepActivity.class);
             HomeActivity.this.startActivity(stepIntent);
         }
+    }
+
+    private void uploadDatabases() {
+        uploadFile("profile.db");
+        uploadFile("step.db");
+        uploadFile("weather.db");
+    }
+
+    private void uploadFile(String filename) {
+
+        File file = getApplicationContext().getDatabasePath(filename);
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.append("Example file contents");
+            writer.close();
+        } catch (Exception exception) {
+            Log.e("MyAmplifyApp", "Upload failed", exception);
+        }
+
+        Amplify.Storage.uploadFile(
+                filename,
+                file,
+                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+        );
     }
 }
